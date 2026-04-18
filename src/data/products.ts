@@ -60,6 +60,36 @@ export const PRODUCT_DATA: Record<string, any[]> = {
       description: "Push your limits. These performance running shorts feature moisture-wicking technology and a lightweight design for maximum mobility.",
       reviews: [{ user: "Steve L.", rating: 5, comment: "Great for workouts, very light." }, { user: "Mike R.", rating: 4, comment: "Good quality, nice fit." }] 
     },
+    { 
+      id: 113, title: "Executive Steel Chronograph", price: 185.00, category: "Men", subCategory: "Accessories", image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?q=80&w=800&auto=format&fit=crop", rating: 4.8, 
+      description: "A precision-engineered chronograph featuring a surgical-grade stainless steel case and a scratch-resistant sapphire crystal. Perfect for the modern professional.",
+      reviews: [{ user: "Alex V.", rating: 5, comment: "Looks much more expensive than it is." }, { user: "Michael S.", rating: 5, comment: "Love the weight and build quality." }] 
+    },
+    { 
+      id: 114, title: "Rugged Field Quartz Watch", price: 95.00, category: "Men", subCategory: "Accessories", image: "https://images.unsplash.com/photo-1533139502658-0198f920d8e8?q=80&w=800&auto=format&fit=crop", rating: 4.6, 
+      description: "Designed for the bold. This rugged field watch features high-visibility numerals, a durable nylon strap, and 100m water resistance.",
+      reviews: [{ user: "Chris L.", rating: 4, comment: "Solid watch for camping and outdoors." }] 
+    },
+    { 
+      id: 115, title: "Hybrid Tech Bomber Jacket", price: 165.00, category: "Men", subCategory: "Outerwear", image: "https://images.unsplash.com/photo-1591047139829-d91aecb6caea?q=80&w=800&auto=format&fit=crop", rating: 4.7, isNew: true,
+      description: "A fusion of style and function. Water-repellent fabric meets a breathable mesh lining in this modern take on the classic bomber silhouette.",
+      reviews: [{ user: "James F.", rating: 5, comment: "Perfect for fall weather. The tech fabric feels great." }] 
+    },
+    { 
+      id: 116, title: "Essential Merino Wool Polo", price: 85.00, category: "Men", subCategory: "Basics", image: "https://images.unsplash.com/photo-1617137984095-74e4e5e3613f?q=80&w=800&auto=format&fit=crop", rating: 4.8, 
+      description: "Experience the temperature-regulating properties of extra-fine Merino wool. This versatile polo offers a clean look and natural odor resistance.",
+      reviews: [{ user: "David G.", rating: 5, comment: "So soft and fits like a glove." }] 
+    },
+    { 
+      id: 117, title: "Urban Cargo Joggers", price: 79.00, category: "Men", subCategory: "Bottoms", image: "https://assets.myntassets.com/w_360,q_50,,dpr_2,fl_progressive,f_webp/assets/images/2024/NOVEMBER/4/GkmT2guP_ca88b3d75d104c48af3ccedb2788c1fb.jpg", rating: 4.5, 
+      description: "Utility meets comfort. These joggers feature multiple functional pockets and a tapered fit for a sleek, streetwear-inspired look.",
+      reviews: [{ user: "Ryan B.", rating: 4, comment: "Great pockets, very comfortable for daily wear." }] 
+    },
+    { 
+      id: 118, title: "Casual Linen-Blend Blazer", price: 145.00, category: "Men", subCategory: "Formal", image: "https://images.unsplash.com/photo-1593030761757-71fae45fa0e7?q=80&w=800&auto=format&fit=crop", rating: 4.7, 
+      description: "The perfect smart-casual layer. This unlined linen-blend blazer offers a relaxed silhouette and natural breathability for warmer climates.",
+      reviews: [{ user: "Oliver S.", rating: 5, comment: "Perfect for summer weddings." }] 
+    },
   ],
   'Women': [
     { 
@@ -78,7 +108,7 @@ export const PRODUCT_DATA: Record<string, any[]> = {
       reviews: [{ user: "Olivia D.", rating: 5, comment: "These make me look so tall. Love them!" }] 
     },
     { 
-      id: 204, title: "Designer Leather Handbag", price: 450.00, category: "Women", subCategory: "Accessories", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRw5K3-uu2pFovIypTk82svftZEVvnqjXDisVc3qMkzGCVXyvsI7E9aqvA&s", rating: 4.8, isNew: true,
+      id: 204, title: "Designer Leather Handbag", price: 450.00, category: "Women", subCategory: "Accessories", image: "https://www.bostanten.com/cdn/shop/products/8_16afc2e6-d4a3-42eb-802a-11e21044288c.jpg?v=1697105422&width=1080", rating: 4.8, isNew: true,
       description: "A statement piece that combines luxury with utility. Crafted from full-grain Italian leather, featuring premium gold-tone hardware and ample interior space.",
       reviews: [{ user: "Amanda W.", rating: 5, comment: "Worth every penny. The quality is insane." }, { user: "Rachel T.", rating: 5, comment: "My everyday bag now." }] 
     },
@@ -88,7 +118,7 @@ export const PRODUCT_DATA: Record<string, any[]> = {
       reviews: [{ user: "Tina G.", rating: 4, comment: "Beautiful pattern, wrinkles a bit easily though." }] 
     },
     { 
-      id: 206, title: "Cashmere Turtleneck Sweater", price: 195.00, category: "Women", subCategory: "Knitwear", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTPjtG2HE97YcWgs_PIRzHdJmGHZzvMrLvILitD3HgPV3P5W914QyJwYfs&s", rating: 4.8, 
+      id: 206, title: "Cashmere Turtleneck Sweater", price: 195.00, category: "Women", subCategory: "Knitwear", image: "https://media.maisoncashmere.com/a48304ef-7d4e-4a4c-9823-719ec3f82e09/maisoncashmere.com/cdn/shop/files/mosel-maxi-cashmere-turtleneck-sweater-MCW078-10-0006-1.webp?v=1754563527&width=480", rating: 4.8, 
       description: "Wrap yourself in luxury. This 100% pure cashmere sweater provides unparalleled softness and an elegant drape, perfect for crisp autumn days.",
       reviews: [{ user: "Diane F.", rating: 5, comment: "Softest sweater I've ever owned." }, { user: "Megan S.", rating: 5, comment: "Incredibly warm without the bulk." }] 
     },
@@ -121,6 +151,36 @@ export const PRODUCT_DATA: Record<string, any[]> = {
       id: 212, title: "Gold Hoop Earrings", price: 45.00, category: "Women", subCategory: "Accessories", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ52fV9wiThh3mcWe9DYJ2JuXfUmh763gnr4PB5HRD-c7vdxy--XF9Egl8&s", rating: 4.7, 
       description: "An everyday staple. These 18k gold plated hoop earrings are lightweight, hypoallergenic, and designed for lasting brilliance.",
       reviews: [{ user: "Ava S.", rating: 4, comment: "A bit smaller than expected but very pretty." }, { user: "Lily J.", rating: 5, comment: "I wear them every single day." }] 
+    },
+    { 
+      id: 213, title: "Stellar Rose Gold Watch", price: 165.00, category: "Women", subCategory: "Accessories", image: "https://images.unsplash.com/photo-1524805444758-089113d48a6d?q=80&w=800&auto=format&fit=crop", rating: 4.9, isNew: true,
+      description: "A timeless masterpiece for your wrist. This rose gold watch features a minimalist sunray dial and a delicate link bracelet.",
+      reviews: [{ user: "Sophia G.", rating: 5, comment: "Absolutely elegant. My favorite accessory." }, { user: "Emma L.", rating: 5, comment: "Beautiful finish, looks very luxury." }] 
+    },
+    { 
+      id: 214, title: "Geneva Minimalist Mesh Band Watch - BARTER HUTT", price: 125.00, category: "Women", subCategory: "Accessories", image: "https://www.barterhutt.com/wp-content/uploads/2022/11/BH-7618956.jpg", rating: 4.7, 
+      description: "Sleek and versatile. The ultra-thin case and adjustable mesh strap make this watch an effortless companion for any outfit.",
+      reviews: [{ user: "Isabella J.", rating: 5, comment: "So light and comfortable. Love the style." }] 
+    },
+    { 
+      id: 215, title: "Sculpted Wrap Midi Dress", price: 115.00, category: "Women", subCategory: "Formal", image: "https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=800&auto=format&fit=crop", rating: 4.8, 
+      description: "Flatter your silhouette with this elegantly sculpted wrap dress. Featuring a tie-waist and a sophisticated midi length perfect for dinner dates.",
+      reviews: [{ user: "Grace K.", rating: 5, comment: "Truly flattering and beautiful fabric." }] 
+    },
+    { 
+      id: 216, title: "Classic Cashmere Cardigan", price: 175.00, category: "Women", subCategory: "Knitwear", image: "https://images.unsplash.com/photo-1543087903-1ac2ec7aa8c5?q=80&w=800&auto=format&fit=crop", rating: 4.9, isBestSeller: true,
+      description: "The ultimate in soft luxury. This pure cashmere cardigan offers natural warmth and a timeless button-through design.",
+      reviews: [{ user: "Martha E.", rating: 5, comment: "Like wearing a soft cloud. Best investment ever." }] 
+    },
+    { 
+      id: 217, title: "Tailored High-Rise Shorts", price: 65.00, category: "Women", subCategory: "Bottoms", image: "https://images.unsplash.com/photo-1591195853828-11db59a44f6b?q=80&w=800&auto=format&fit=crop", rating: 4.6, 
+      description: "Sharp and sophisticated. These tailored high-rise shorts feature crisp front pleats and a flattering set-in waistband.",
+      reviews: [{ user: "Olivia D.", rating: 4, comment: "Very chic for summer and great quality." }] 
+    },
+    { 
+      id: 218, title: "Modern Oversized Poplin Shirt", price: 89.00, category: "Women", subCategory: "Casual", image: "https://www.nu.com.tr/cdn/shop/files/Y26-11038-SIYAH-2.jpg?v=1771340089&width=3392", rating: 4.7, 
+      description: "The hero piece of every modern wardrobe. A crisp cotton poplin shirt with a modern oversized cut for a clean, effortless look.",
+      reviews: [{ user: "Audrey H.", rating: 5, comment: "Classic and looks great with everything." }] 
     },
   ],
   'Kids': [
@@ -184,6 +244,36 @@ export const PRODUCT_DATA: Record<string, any[]> = {
       description: "Roar! This adorable full-zip hoodie features fierce dinosaur spikes along the hood and back, making imaginative play even more fun.",
       reviews: [{ user: "Dave L.", rating: 5, comment: "My kid thinks he's a T-Rex now." }, { user: "Amanda S.", rating: 5, comment: "Great quality zipper." }] 
     },
+    { 
+      id: 313, title: "Dextera Lux Watch Swiss Made, Metal Bracelet, Gold Tone, Gold-tone Finish", price: 35.00, category: "Kids", subCategory: "Accessories", image: "https://swnigeria.com/wp-content/uploads/2026/02/dextera-lux-watch-swiss-made-metal-bracelet-gold-tone-gold-tone-finish-swarovski-5715447-2.jpg", rating: 4.8, 
+      description: "Empower their discovery! This easy-to-read digital watch features a colorful backlight, stopwatch, and water resistance for all-day play.",
+      reviews: [{ user: "SuperMom", rating: 5, comment: "My son uses the stopwatch for everything! Very durable." }] 
+    },
+    { 
+      id: 314, title: "Durable Sport Silicone Watch: Octea Lux Sport 39mm", price: 28.00, category: "Kids", subCategory: "Accessories", image: "https://swnigeria.com/wp-content/uploads/2025/02/octea-lux-sport-watch-metal-bracelet-blue-pvd-swarovski-5610475.jpg", rating: 4.7, 
+      description: "Soft but strong. This silicone sport watch is comfortable for little wrists and stands up to the toughest playground action.",
+      reviews: [{ user: "DadOfThree", rating: 5, comment: "Tough enough for my 8-year old. Great value." }] 
+    },
+    { 
+      id: 315, title: "Organic Cotton Animal Print Tee", price: 22.00, category: "Kids", subCategory: "Basics", image: "https://images.unsplash.com/photo-1514090458221-65bb69cf63e6?q=80&w=800&auto=format&fit=crop", rating: 4.9, 
+      description: "Gentle on skin and big on personality. This 100% organic cotton tee features an adorable hand-drawn animal graphic.",
+      reviews: [{ user: "Kelly F.", rating: 5, comment: "So soft and the print is adorable." }] 
+    },
+    { 
+      id: 316, title: "Reversible Hooded Windbreaker", price: 55.00, category: "Kids", subCategory: "Outerwear", image: "https://images.unsplash.com/photo-1622290291468-a28f7a7dc6a8?q=80&w=800&auto=format&fit=crop", rating: 4.8, isNew: true,
+      description: "Two looks in one! This lightweight windbreaker is reversible, providing two vibrant styles while offering wind and rain protection.",
+      reviews: [{ user: "Sarah P.", rating: 5, comment: "Great for unpredictable spring weather. Love the two designs." }] 
+    },
+    { 
+      id: 317, title: "Stretch Denim Comfort Jeans", price: 38.00, category: "Kids", subCategory: "Basics", image: "https://images.unsplash.com/photo-1540479859555-17af45c78602?q=80&w=800&auto=format&fit=crop", rating: 4.6, 
+      description: "Freedom to move. These stretch denim jeans offer the classic look of denim with a flexible feel that lets them run, jump, and play.",
+      reviews: [{ user: "Mark J.", rating: 4, comment: "Good fit, holds up well in the wash." }] 
+    },
+    { 
+      id: 318, title: "Cozy Fleece Lounge Set", price: 42.00, category: "Kids", subCategory: "Basics", image: "https://images.unsplash.com/photo-1519238263530-99bdd11df2ea?q=80&w=800&auto=format&fit=crop", rating: 4.9, isBestSeller: true,
+      description: "The ultimate cozy coordinate. This super-soft fleece set is perfect for weekend relaxations and chilly mornings.",
+      reviews: [{ user: "Elena S.", rating: 5, comment: "My daughter never wants to take this off. So soft." }] 
+    },
   ],
   'Collections': [
     { 
@@ -226,5 +316,35 @@ export const PRODUCT_DATA: Record<string, any[]> = {
       description: "Roomy, rugged, and ready for adventure. A heavy-duty canvas tote equipped with multiple interior compartments to keep your essentials organized.",
       reviews: [{ user: "Sandra T.", rating: 4, comment: "Holds so much stuff! Use it as a diaper bag sometimes." }, { user: "Betty C.", rating: 5, comment: "Very sturdy canvas." }] 
     },
-  ]
+    { 
+      id: 409, title: "Heritage Automatic Field Watch", price: 650.00, category: "Collections", subCategory: "Luxury Watches", image: "https://cdn-images.farfetch-contents.com/20/25/73/69/20257369_55832081_1000.jpg", rating: 4.9, 
+      description: "A tribute to classic horology. This self-winding automatic watch features a vintage-inspired dial and a handmade Italian leather strap.",
+      reviews: [{ user: "William B.", rating: 5, comment: "The mechanical sweep is mesmerizing. Pure class." }] 
+    },
+    { 
+      id: 410, title: "Midnight Obsidian Diver Watch", price: 1200.00, category: "Collections", subCategory: "Luxury Watches", image: "https://images.unsplash.com/photo-1523170335258-f5ed11844a49?q=80&w=800&auto=format&fit=crop", rating: 5.0, isBestSeller: true,
+      description: "Engineered for excellence. This professional diver's watch is water-resistant to 300m and features a ceramic unidirectional bezel.",
+      reviews: [{ user: "James P.", rating: 5, comment: "The ultimate tool watch. Built like a tank." }] 
+    },
+    { 
+      id: 411, title: "Solar-Powered Aviator Watch", price: 420.00, category: "Collections", subCategory: "Luxury Watches", image: "https://images.unsplash.com/photo-1614164185128-e4ec99c436d7?q=80&w=800&auto=format&fit=crop", rating: 4.8, 
+      description: "Fusing tech and tradition. This solar-powered watch never needs a battery and features a dual-time display and world time tracking.",
+      reviews: [{ user: "Michael T.", rating: 4, comment: "Great for travel, never worrying about battery is a plus." }] 
+    },
+    { 
+      id: 412, title: "Limited Edition Skeleton Watch", price: 2500.00, category: "Collections", subCategory: "Luxury Watches", image: "https://images.unsplash.com/photo-1509112756314-34a0badb29d4?q=80&w=800&auto=format&fit=crop", rating: 5.0, isNew: true,
+      description: "A window into history. Witness the intricate mechanical movement through the transparent dial of this masterfully crafted skeleton watch.",
+      reviews: [{ user: "George C.", rating: 5, comment: "A work of art for the wrist. Incredible detail." }] 
+    },
+    { 
+      id: 413, title: "Bespoke Italian Leather Belt", price: 145.00, category: "Collections", subCategory: "Accessories", image: "https://www.florenceleathermarket.com/image/cache/data/prodotti/cintura-6159/6159-tm/2048T1-218x218.JPG", rating: 4.8, 
+      description: "The finishing touch. Hand-crafted from premium vegetable-tanned leather with a solid brass buckle that will patina beautifully over time.",
+      reviews: [{ user: "Robert D.", rating: 5, comment: "The leather quality is far superior to anything in stores." }] 
+    },
+    { 
+      id: 414, title: "Artisan Silk Jacquard Tie", price: 95.00, category: "Collections", subCategory: "Accessories", image: "https://images.unsplash.com/photo-1594938298603-c8148c4dae35?q=80&w=800&auto=format&fit=crop", rating: 4.9, 
+      description: "Woven elegance. This pure silk tie features an intricate jacquard pattern and a luxurious weight for a perfect, confident knot.",
+      reviews: [{ user: "Henry L.", rating: 5, comment: "The color depth is amazing. Great for special occasions." }] 
+    },
+  ],
 };

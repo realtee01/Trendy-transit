@@ -1,22 +1,24 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useMemo, memo } from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'motion/react';
-import { Menu, X, ShoppingBag, Search, ArrowRight, Star, ChevronRight, Heart, Diamond, Check, User, LogOut, Eye, EyeOff, Package, Mail, Phone, MapPin, Headphones, HelpCircle, Truck, RefreshCw } from 'lucide-react';
+import { Menu, X, ShoppingBag, Search, ArrowRight, Star, ChevronRight, Heart, Shirt, Diamond, Check, User, LogOut, Eye, EyeOff, Package, Mail, Phone, MapPin, Headphones, HelpCircle, Truck, RefreshCw, Send, Sparkles, MessageCircle } from 'lucide-react';
 import { auth, logOut, signInWithGoogle } from './firebase';
 import { onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
 
 import { PRODUCT_DATA } from './data/products';
 
-const Logo = () => (
+const Logo = memo(() => (
   <div className="flex items-center gap-1.5 sm:gap-2 cursor-pointer">
-    <Diamond className="text-orange-500 w-5 h-5 sm:w-7 sm:h-7" strokeWidth={2} />
+    <Shirt className="text-orange-500 w-5 h-5 sm:w-7 sm:h-7" strokeWidth={2} />
     <span className="font-serif font-bold text-lg sm:text-2xl tracking-wide uppercase">
       <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-500 via-orange-600 to-red-600">TRENDY</span>
       <span className="text-black">TRANSIT</span>
     </span>
   </div>
-);
+));
+Logo.displayName = 'Logo';
 
-const Navbar = ({ activeCategory, setActiveCategory, currentView, setCurrentView, cartCount, wishlistCount, onSearchClick, onCartClick, onWishlistClick, user, onLogin, onLogout }: any) => {
+const Navbar = memo(({ activeCategory, setActiveCategory, currentView, setCurrentView, cartCount, wishlistCount, onSearchClick, onCartClick, onWishlistClick, user, onLogin, onLogout, onSupportClick }: any) => {
   const [isOpen, setIsOpen] = useState(false);
   const categories = ['Men', 'Women', 'Kids', 'Collections'];
 
@@ -180,16 +182,19 @@ const Navbar = ({ activeCategory, setActiveCategory, currentView, setCurrentView
                 <div className="h-px bg-gray-200 my-4" />
                 
                 {['Customer Service', 'Store Locator', 'News Letter'].map((item, i) => (
-                  <motion.a 
+                  <motion.button 
                     initial={{ opacity: 0, x: 20 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ delay: (i + 5) * 0.1 + 0.1 }}
                     key={item} 
-                    href="#" 
-                    className="text-lg font-sans font-medium text-gray-500 hover:text-black transition-colors"
+                    onClick={() => {
+                      onSupportClick(item);
+                      setIsOpen(false);
+                    }}
+                    className="text-lg font-sans font-medium text-gray-500 hover:text-black transition-colors text-left"
                   >
                     {item}
-                  </motion.a>
+                  </motion.button>
                 ))}
               </div>
 
@@ -266,12 +271,13 @@ const Navbar = ({ activeCategory, setActiveCategory, currentView, setCurrentView
       </AnimatePresence>
     </>
   );
-};
+});
+Navbar.displayName = 'Navbar';
 
-const SearchOverlay = ({ isOpen, onClose, onProductClick }: any) => {
+const SearchOverlay = memo(({ isOpen, onClose, onProductClick }: any) => {
   const [query, setQuery] = useState('');
-  const allProducts = Object.values(PRODUCT_DATA).flat();
-  const results = query ? allProducts.filter(p => p.title.toLowerCase().includes(query.toLowerCase()) || p.category.toLowerCase().includes(query.toLowerCase())) : [];
+  const allProducts = useMemo(() => Object.values(PRODUCT_DATA).flat(), []);
+  const results = useMemo(() => query ? allProducts.filter(p => p.title.toLowerCase().includes(query.toLowerCase()) || p.category.toLowerCase().includes(query.toLowerCase())) : [], [query, allProducts]);
 
   if (!isOpen) return null;
 
@@ -337,9 +343,10 @@ const SearchOverlay = ({ isOpen, onClose, onProductClick }: any) => {
       </motion.div>
     </AnimatePresence>
   );
-};
+});
+SearchOverlay.displayName = 'SearchOverlay';
 
-const ProductModal = ({ product, onClose, onAddToCart, onAddToWishlist, wishlist }: any) => {
+const ProductModal = memo(({ product, onClose, onAddToCart, onAddToWishlist, wishlist }: any) => {
   const [selectedSize, setSelectedSize] = useState('M');
   const [activeTab, setActiveTab] = useState('details');
   
@@ -464,9 +471,10 @@ const ProductModal = ({ product, onClose, onAddToCart, onAddToWishlist, wishlist
       </motion.div>
     </AnimatePresence>
   );
-};
+});
+ProductModal.displayName = 'ProductModal';
 
-const Hero = ({ user, onLogin, onLogout, setCurrentView }: any) => {
+const Hero = memo(({ user, onLogin, onLogout, setCurrentView }: any) => {
   return (
     <section className="relative min-h-[calc(100vh-112px)] flex items-center overflow-hidden">
       <div 
@@ -614,33 +622,126 @@ const Hero = ({ user, onLogin, onLogout, setCurrentView }: any) => {
       </div>
     </section>
   );
-};
+});
+Hero.displayName = 'Hero';
 
-const FeaturedProducts = ({ activeCategory, onProductClick, onAddToCart, onAddToWishlist, wishlist }: any) => {
+const ProductCard = memo(({ product, idx, isInWishlist, onProductClick, onAddToCart, onAddToWishlist, variant = 'light' }: any) => {
+  const isDark = variant === 'dark';
+  
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: "-50px" }}
+      transition={{ 
+        delay: (idx % 4) * 0.08,
+        duration: 0.5,
+        ease: [0.165, 0.84, 0.44, 1] 
+      }}
+      className="group relative cursor-pointer"
+      onClick={() => onProductClick(product)}
+      style={{ willChange: 'transform, opacity' }}
+    >
+      <div className={`relative aspect-[3/4] rounded-2xl overflow-hidden mb-5 ${isDark ? 'bg-zinc-900 border-zinc-800' : 'bg-gray-100 border-gray-200'} border shadow-sm group-hover:shadow-2xl transition-all duration-500`}>
+        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-500 z-10" />
+        
+        <div className="absolute top-4 left-4 z-20 flex flex-col gap-2">
+          {product.isNew && (
+            <div className="bg-emerald-500 text-white text-[10px] font-bold px-2.5 py-1 rounded-lg uppercase tracking-wider shadow-lg">
+              New
+            </div>
+          )}
+          {product.isBestSeller && !product.isNew && (
+            <div className="bg-amber-500 text-white text-[10px] font-bold px-2.5 py-1 rounded-lg uppercase tracking-wider shadow-lg">
+              Top
+            </div>
+          )}
+          {product.rating >= 4.9 && !product.isNew && !product.isBestSeller && (
+            <div className="bg-purple-500 text-white text-[10px] font-bold px-2.5 py-1 rounded-lg uppercase tracking-wider shadow-lg">
+              Popular
+            </div>
+          )}
+          {isDark && !product.isNew && !product.isBestSeller && product.rating < 4.9 && (
+            <div className="bg-orange-600 text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-tighter shadow-lg">
+              Trending
+            </div>
+          )}
+        </div>
+        
+        {onAddToWishlist && (
+          <button 
+            onClick={(e) => { e.stopPropagation(); onAddToWishlist(product); }}
+            className={`absolute top-4 right-4 z-20 p-2.5 ${isDark ? 'bg-zinc-800/90 text-zinc-400' : 'bg-white/90 text-gray-400'} backdrop-blur-md rounded-full hover:text-red-500 hover:bg-white transition-all opacity-0 group-hover:opacity-100 shadow-sm`}
+          >
+            <Heart size={18} strokeWidth={1.5} className={isInWishlist ? "fill-red-500 text-red-500" : ""} />
+          </button>
+        )}
+
+        <img 
+          src={product.image} 
+          alt={product.title}
+          loading="lazy"
+          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+        />
+        <div className="absolute bottom-0 left-0 w-full p-4 z-20 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
+          <button 
+            onClick={(e) => { e.stopPropagation(); onAddToCart(product); }}
+            className={`w-full py-3 ${isDark ? 'bg-white text-black' : 'bg-white/95 backdrop-blur-md text-black'} font-semibold rounded-xl hover:bg-black hover:text-white transition-colors shadow-lg border ${isDark ? 'border-transparent' : 'border-gray-200'}`}
+          >
+            Add to Bag
+          </button>
+        </div>
+      </div>
+      
+      <div className="flex flex-col px-2 pr-1 overflow-hidden">
+        <div className="flex justify-between items-center mb-1.5">
+          <span className={`text-[10px] font-medium uppercase tracking-widest ${isDark ? 'text-zinc-500' : 'text-gray-500'}`}>
+            {product.subCategory}
+          </span>
+          <div className={`flex items-center gap-1 px-2 py-0.5 rounded-full ${isDark ? 'bg-zinc-900' : 'bg-gray-50'}`}>
+            <Star size={10} className="text-orange-500 fill-orange-500" />
+            <span className={`text-[10px] font-bold ${isDark ? 'text-zinc-300' : 'text-black'}`}>{product.rating}</span>
+          </div>
+        </div>
+        <div className="flex justify-between items-start gap-4">
+          <h3 className={`text-base font-serif font-bold leading-snug line-clamp-2 transition-colors duration-300 ${isDark ? 'text-white group-hover:text-orange-500' : 'text-black group-hover:text-orange-600'}`}>
+            {product.title}
+          </h3>
+          <span className={`text-sm font-sans font-semibold whitespace-nowrap px-2.5 py-1 rounded-lg shadow-sm border ${isDark ? 'bg-zinc-800 text-white border-zinc-700' : 'bg-white text-black border-gray-200'}`}>
+            ${product.price.toFixed(2)}
+          </span>
+        </div>
+      </div>
+    </motion.div>
+  );
+});
+ProductCard.displayName = 'ProductCard';
+
+const FeaturedProducts = memo(({ activeCategory, onProductClick, onAddToCart, onAddToWishlist, wishlist }: any) => {
   const [loading, setLoading] = useState(true);
   const [sortBy, setSortBy] = useState('newest');
   const [filterSub, setFilterSub] = useState('All');
   
-  const rawProducts = activeCategory ? (PRODUCT_DATA[activeCategory] || []) : Object.values(PRODUCT_DATA).flat();
+  const rawProducts = useMemo(() => activeCategory ? (PRODUCT_DATA[activeCategory] || []) : Object.values(PRODUCT_DATA).flat(), [activeCategory]);
   
   // Get unique subcategories for filtering
-  const subCategories = ['All', ...new Set(rawProducts.map(p => p.subCategory))];
+  const subCategories = useMemo(() => ['All', ...new Set(rawProducts.map(p => p.subCategory))], [rawProducts]);
 
   // Apply filtering and sorting
-  const products = rawProducts
+  const products = useMemo(() => rawProducts
     .filter(p => filterSub === 'All' || p.subCategory === filterSub)
     .sort((a, b) => {
       if (sortBy === 'price-low') return a.price - b.price;
       if (sortBy === 'price-high') return b.price - a.price;
       if (sortBy === 'rating') return b.rating - a.rating;
       return 0; // newest/default
-    });
+    }), [rawProducts, filterSub, sortBy]);
 
   useEffect(() => {
     setLoading(true);
     const timer = setTimeout(() => {
       setLoading(false);
-    }, 600);
+    }, 400); // Snappier loading feel
     return () => clearTimeout(timer);
   }, [activeCategory, sortBy, filterSub]);
 
@@ -666,7 +767,7 @@ const FeaturedProducts = ({ activeCategory, onProductClick, onAddToCart, onAddTo
               <select 
                 value={filterSub}
                 onChange={(e) => setFilterSub(e.target.value)}
-                className="bg-white border border-gray-200 rounded-xl px-4 py-2 text-sm font-medium outline-none focus:border-black transition-colors"
+                className="bg-white border border-gray-200 rounded-xl px-4 py-2 text-sm font-medium outline-none focus:border-black transition-colors ring-offset-2 focus:ring-2 focus:ring-black/5"
               >
                 {subCategories.map(sub => <option key={sub} value={sub}>{sub}</option>)}
               </select>
@@ -676,7 +777,7 @@ const FeaturedProducts = ({ activeCategory, onProductClick, onAddToCart, onAddTo
               <select 
                 value={sortBy}
                 onChange={(e) => setSortBy(e.target.value)}
-                className="bg-white border border-gray-200 rounded-xl px-4 py-2 text-sm font-medium outline-none focus:border-black transition-colors"
+                className="bg-white border border-gray-200 rounded-xl px-4 py-2 text-sm font-medium outline-none focus:border-black transition-colors ring-offset-2 focus:ring-2 focus:ring-black/5"
               >
                 <option value="newest">Newest</option>
                 <option value="price-low">Price: Low to High</option>
@@ -696,82 +797,19 @@ const FeaturedProducts = ({ activeCategory, onProductClick, onAddToCart, onAddTo
                   <div className="h-3 w-1/3 bg-gray-200 rounded" />
                 </div>
               ))
-            : products.length > 0 ? products.map((product, idx) => {
-              const isInWishlist = wishlist.some((p: any) => p.id === product.id);
-              return (
-                <motion.div
+            : products.length > 0 ? products.map((product, idx) => (
+                <ProductCard 
                   key={`${activeCategory}-${product.id}`}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: idx * 0.05 }}
-                  className="group relative cursor-pointer"
-                  onClick={() => onProductClick(product)}
-                >
-                  {/* Enhanced Hover Effect Container */}
-                  <div className="relative aspect-[3/4] rounded-2xl overflow-hidden mb-5 bg-gray-100 border border-gray-200 shadow-sm group-hover:shadow-2xl transition-all duration-500">
-                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-500 z-10" />
-                    
-                    {product.isNew && (
-                      <div className="absolute top-4 left-4 bg-emerald-500 text-white text-[10px] font-bold px-2.5 py-1 rounded-lg uppercase tracking-wider z-20 shadow-lg animate-in fade-in slide-in-from-left-2 duration-500">
-                        New
-                      </div>
-                    )}
-                    {product.isBestSeller && !product.isNew && (
-                      <div className="absolute top-4 left-4 bg-amber-500 text-white text-[10px] font-bold px-2.5 py-1 rounded-lg uppercase tracking-wider z-20 shadow-lg animate-in fade-in slide-in-from-left-2 duration-500">
-                        Top
-                      </div>
-                    )}
-                    {product.rating >= 4.9 && !product.isNew && !product.isBestSeller && (
-                      <div className="absolute top-4 left-4 bg-purple-500 text-white text-[10px] font-bold px-2.5 py-1 rounded-lg uppercase tracking-wider z-20 shadow-lg animate-in fade-in slide-in-from-left-2 duration-500">
-                        Popular
-                      </div>
-                    )}
-                    
-                    <button 
-                      onClick={(e) => { e.stopPropagation(); onAddToWishlist(product); }}
-                      className="absolute top-4 right-4 z-20 p-2.5 bg-white/90 backdrop-blur-md rounded-full text-gray-400 hover:text-red-500 hover:bg-white transition-all opacity-0 group-hover:opacity-100 shadow-sm"
-                    >
-                      <Heart size={18} strokeWidth={1.5} className={isInWishlist ? "fill-red-500 text-red-500" : ""} />
-                    </button>
-
-                    <img 
-                      src={product.image} 
-                      alt={product.title}
-                      loading="lazy"
-                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                    />
-                    <div className="absolute bottom-0 left-0 w-full p-4 z-20 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
-                      <button 
-                        onClick={(e) => { e.stopPropagation(); onAddToCart(product); }}
-                        className="w-full py-3 bg-white/95 backdrop-blur-md text-black font-semibold rounded-xl hover:bg-black hover:text-white transition-colors shadow-lg border border-gray-200"
-                      >
-                        Add to Bag
-                      </button>
-                    </div>
-                  </div>
-                  <div className="flex flex-col px-2 pt-2 overflow-hidden">
-                    <div className="flex justify-between items-center mb-1.5">
-                      <span className="text-[10px] text-gray-500 font-medium uppercase tracking-widest">
-                        {product.subCategory}
-                      </span>
-                      <div className="flex items-center gap-1">
-                        <Star size={10} className="text-orange-500 fill-orange-500" />
-                        <span className="text-[10px] font-bold">{product.rating}</span>
-                      </div>
-                    </div>
-                    <div className="flex justify-between items-start gap-4">
-                      <h3 className="text-base font-serif font-bold text-black leading-snug line-clamp-2 group-hover:text-orange-600 transition-colors duration-300">
-                        {product.title}
-                      </h3>
-                      <span className="text-sm font-sans font-semibold text-black whitespace-nowrap bg-white/80 backdrop-blur-sm px-2.5 py-1 rounded-lg shadow-sm border border-gray-200">
-                        ${product.price.toFixed(2)}
-                      </span>
-                    </div>
-                  </div>
-                </motion.div>
-              );
-            }) : (
-              <div className="col-span-full py-20 text-center">
+                  product={product}
+                  idx={idx}
+                  isInWishlist={wishlist.some((p: any) => p.id === product.id)}
+                  onProductClick={onProductClick}
+                  onAddToCart={onAddToCart}
+                  onAddToWishlist={onAddToWishlist}
+                />
+              ))
+            : (
+              <div className="col-span-full py-20 text-center bg-gray-50 rounded-3xl border border-dashed border-gray-200">
                 <p className="text-gray-400 text-xl font-serif italic">No products found in this sub-category.</p>
                 <button onClick={() => setFilterSub('All')} className="mt-4 text-orange-600 font-bold underline">Clear Filters</button>
               </div>
@@ -780,16 +818,16 @@ const FeaturedProducts = ({ activeCategory, onProductClick, onAddToCart, onAddTo
       </div>
     </section>
   );
-};
+});
+FeaturedProducts.displayName = 'FeaturedProducts';
 
-const TrendingSection = ({ onProductClick, onAddToCart }: any) => {
-  // Pull trending items directly from our full product data so they have full descriptions/reviews
-  const trendingItems = [
+const TrendingSection = memo(({ onProductClick, onAddToCart, onAddToWishlist, wishlist }: any) => {
+  const trendingItems = useMemo(() => [
     PRODUCT_DATA['Men'].find(p => p.id === 101),
     PRODUCT_DATA['Women'].find(p => p.id === 201),
     PRODUCT_DATA['Collections'].find(p => p.id === 401),
     PRODUCT_DATA['Men'].find(p => p.id === 108),
-  ].filter(Boolean);
+  ].filter(Boolean), []);
 
   return (
     <section className="py-20 bg-black text-white overflow-hidden">
@@ -806,62 +844,25 @@ const TrendingSection = ({ onProductClick, onAddToCart }: any) => {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
           {trendingItems.map((item, idx) => (
-            <motion.div 
+            <ProductCard 
               key={item.id}
-              whileInView={{ opacity: 1, y: 0 }}
-              initial={{ opacity: 0, y: 20 }}
-              transition={{ delay: idx * 0.1 }}
-              viewport={{ once: true }}
-              onClick={() => onProductClick(item)}
-              className="group cursor-pointer"
-            >
-              <div className="relative aspect-[4/5] rounded-2xl overflow-hidden mb-4 border border-white/10 group-hover:shadow-lg transition-all duration-500">
-                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-500 z-10" />
-                
-                {item.isNew ? (
-                  <div className="absolute top-4 left-4 bg-emerald-500 text-white text-[10px] font-bold px-2.5 py-1 rounded-lg uppercase tracking-wider z-20 shadow-lg">
-                    New
-                  </div>
-                ) : item.isBestSeller ? (
-                  <div className="absolute top-4 left-4 bg-amber-500 text-white text-[10px] font-bold px-2.5 py-1 rounded-lg uppercase tracking-wider z-20 shadow-lg">
-                    Top Sellers
-                  </div>
-                ) : (
-                  <div className="absolute top-4 left-4 bg-orange-600 text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-tighter z-20">
-                    Trending Now
-                  </div>
-                )}
-                
-                <img 
-                  src={item.image} 
-                  alt={item.title} 
-                  loading="lazy"
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" 
-                />
-                
-                <div className="absolute bottom-0 left-0 w-full p-4 z-20 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-300">
-                  <button 
-                    onClick={(e) => { e.stopPropagation(); onAddToCart(item); }}
-                    className="w-full py-3 bg-white/95 backdrop-blur-md text-black font-semibold rounded-xl hover:bg-black hover:text-white transition-colors shadow-lg border border-gray-200"
-                  >
-                    Add to Bag
-                  </button>
-                </div>
-              </div>
-              <h3 className="font-serif font-bold text-lg mb-1 group-hover:text-orange-500 transition-colors">{item.title}</h3>
-              <div className="flex justify-between items-center">
-                <span className="text-gray-400 text-sm">{item.subCategory}</span>
-                <span className="font-bold text-orange-500">${item.price.toFixed(2)}</span>
-              </div>
-            </motion.div>
+              product={item}
+              idx={idx}
+              variant="dark"
+              isInWishlist={wishlist?.some((p: any) => p.id === item.id)}
+              onProductClick={onProductClick}
+              onAddToCart={onAddToCart}
+              onAddToWishlist={onAddToWishlist}
+            />
           ))}
         </div>
       </div>
     </section>
   );
-};
+});
+TrendingSection.displayName = 'TrendingSection';
 
-const AboutSection = () => {
+const AboutSection = memo(() => {
   return (
     <motion.section 
       initial={{ opacity: 0 }}
@@ -925,7 +926,7 @@ const AboutSection = () => {
               className="absolute -right-8 top-1/4 z-20 bg-white p-6 rounded-2xl shadow-xl border border-gray-100 max-w-[200px]"
             >
               <div className="flex items-center gap-2 mb-2">
-                <Diamond size={20} className="text-orange-600" />
+                <Shirt size={20} className="text-orange-600" />
                 <span className="font-bold text-sm uppercase">Heritage</span>
               </div>
               <p className="text-xs text-gray-500">Every piece is designed in our London studio with obsession over detail.</p>
@@ -958,9 +959,10 @@ const AboutSection = () => {
       </div>
     </motion.section>
   );
-};
+});
+AboutSection.displayName = 'AboutSection';
 
-const PromoSection = ({ setCurrentView, setActiveCategory }: any) => (
+const PromoSection = memo(({ setCurrentView, setActiveCategory }: any) => (
   <section id="lookbook" className="py-20 relative overflow-hidden scroll-mt-20">
     <div className="max-w-7xl mx-auto px-6">
       <div className="relative rounded-3xl overflow-hidden h-[400px] flex items-center shadow-2xl group cursor-pointer">
@@ -988,29 +990,34 @@ const PromoSection = ({ setCurrentView, setActiveCategory }: any) => (
       </div>
     </div>
   </section>
-);
+));
+PromoSection.displayName = 'PromoSection';
 
-const FooterModal = ({ title, content, onClose }: any) => (
-  <motion.div 
-    initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-    className="fixed inset-0 z-[150] bg-black/60 backdrop-blur-md flex items-center justify-center p-6"
-    onClick={onClose}
-  >
+const FooterModal = memo(({ title, content, onClose }: any) => {
+  return createPortal(
     <motion.div 
-      initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }}
-      className="bg-white w-full max-w-2xl rounded-3xl p-8 shadow-2xl overflow-hidden relative"
-      onClick={e => e.stopPropagation()}
+      initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+      className="fixed inset-0 z-[150] bg-black/60 backdrop-blur-md flex items-center justify-center p-6"
+      onClick={onClose}
     >
-      <button onClick={onClose} className="absolute top-6 right-6 p-2 hover:bg-gray-100 rounded-full transition-colors">
-        <X size={24} />
-      </button>
-      <h3 className="text-3xl font-serif font-bold mb-8">{title}</h3>
-      <div className="max-h-[70vh] overflow-y-auto pr-4">
-        {content}
-      </div>
-    </motion.div>
-  </motion.div>
-);
+      <motion.div 
+        initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ scale: 0.9, opacity: 0 }}
+        className="bg-white w-full max-w-2xl rounded-3xl p-8 shadow-2xl overflow-hidden relative"
+        onClick={e => e.stopPropagation()}
+      >
+        <button onClick={onClose} className="absolute top-6 right-6 p-2 hover:bg-gray-100 rounded-full transition-colors">
+          <X size={24} />
+        </button>
+        <h3 className="text-3xl font-serif font-bold mb-8">{title}</h3>
+        <div className="max-h-[70vh] overflow-y-auto pr-4">
+          {content}
+        </div>
+      </motion.div>
+    </motion.div>,
+    document.body
+  );
+});
+FooterModal.displayName = 'FooterModal';
 
 const SUPPORT_SECTIONS: { [key: string]: any } = {
   'Customer Service': {
@@ -1144,26 +1151,36 @@ const SUPPORT_SECTIONS: { [key: string]: any } = {
         </div>
       </div>
     )
+  },
+  'News Letter': {
+    title: 'Newsletter',
+    render: () => (
+      <div className="space-y-6">
+        <div className="p-8 bg-black text-white rounded-3xl relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-32 h-32 bg-orange-600/20 blur-3xl rounded-full -mr-16 -mt-16" />
+          <h4 className="text-2xl font-serif font-bold mb-4">Join the Club</h4>
+          <p className="text-gray-400 mb-6 font-medium">Get early access to drops, exclusive discounts, and fashion insights directly to your inbox.</p>
+          <div className="flex flex-col gap-3">
+            <input 
+              type="email" 
+              placeholder="Enter your email" 
+              className="w-full px-6 py-4 bg-white/10 border border-white/20 rounded-xl focus:outline-none focus:border-orange-500 transition-colors text-white placeholder:text-gray-500"
+            />
+            <button className="w-full py-4 bg-orange-600 text-white font-bold rounded-xl hover:bg-orange-700 transition-colors uppercase tracking-widest">Subscribe Now</button>
+          </div>
+          <p className="text-[10px] text-gray-500 mt-4 text-center">By subscribing, you agree to our Terms of Service and Privacy Policy.</p>
+        </div>
+      </div>
+    )
   }
 };
 
-const Footer = ({ setCurrentView, setActiveCategory }: any) => {
-  const [activeModal, setActiveModal] = useState<string | null>(null);
-
+const Footer = memo(({ setCurrentView, setActiveCategory, onSupportClick }: any) => {
   return (
     <footer className="border-t border-gray-200 bg-white pt-20 pb-10 relative overflow-hidden">
-      <AnimatePresence>
-        {activeModal && SUPPORT_SECTIONS[activeModal] && (
-          <FooterModal 
-            title={SUPPORT_SECTIONS[activeModal].title}
-            content={SUPPORT_SECTIONS[activeModal].render()}
-            onClose={() => setActiveModal(null)}
-          />
-        )}
-      </AnimatePresence>
       <div className="max-w-7xl mx-auto px-6 relative z-10">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
-          <div className="col-span-1 md:col-span-2">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-12 mb-16">
+          <div className="col-span-1">
             <div className="mb-6">
               <Logo />
             </div>
@@ -1185,11 +1202,28 @@ const Footer = ({ setCurrentView, setActiveCategory }: any) => {
             <h4 className="font-bold text-black mb-6 font-sans text-sm tracking-widest uppercase">Support</h4>
             <ul className="space-y-4 text-gray-500">
               <li><button onClick={() => setCurrentView('about')} className="hover:text-black transition-colors">About Us</button></li>
-              <li><button onClick={() => setActiveModal('Customer Service')} className="hover:text-black transition-colors">Customer Service</button></li>
-              <li><button onClick={() => setActiveModal('Store Locator')} className="hover:text-black transition-colors">Store Locator</button></li>
-              <li><button onClick={() => setActiveModal('Returns')} className="hover:text-black transition-colors">Returns</button></li>
-              <li><button onClick={() => setActiveModal('Contact')} className="hover:text-black transition-colors">Contact</button></li>
+              <li><button onClick={() => onSupportClick('Customer Service')} className="hover:text-black transition-colors">Customer Service</button></li>
+              <li><button onClick={() => onSupportClick('Store Locator')} className="hover:text-black transition-colors">Store Locator</button></li>
+              <li><button onClick={() => onSupportClick('Returns')} className="hover:text-black transition-colors">Returns</button></li>
+              <li><button onClick={() => onSupportClick('Contact')} className="hover:text-black transition-colors">Contact</button></li>
             </ul>
+          </div>
+          <div>
+            <h4 className="font-bold text-black mb-6 font-sans text-sm tracking-widest uppercase">Newsletter</h4>
+            <p className="text-gray-500 text-sm mb-6">Stay ahead of the curve with our latest drops.</p>
+            <div className="flex gap-2">
+              <input 
+                type="email" 
+                placeholder="Email" 
+                className="flex-1 px-4 py-2 border border-gray-200 rounded-lg focus:outline-none focus:border-black text-sm"
+              />
+              <button 
+                onClick={() => onSupportClick('News Letter')}
+                className="px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors"
+              >
+                <ArrowRight size={18} />
+              </button>
+            </div>
           </div>
         </div>
         <div className="border-t border-gray-200 pt-8 flex flex-col md:flex-row items-center justify-between text-sm text-gray-400">
@@ -1202,7 +1236,106 @@ const Footer = ({ setCurrentView, setActiveCategory }: any) => {
       </div>
     </footer>
   );
-};
+});
+Footer.displayName = 'Footer';
+
+const ChatbotWidget = memo(() => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [messages, setMessages] = useState<{role: 'assistant' | 'user', text: string}[]>([
+    { role: 'assistant', text: "Hey! I'm Toby, your fashion AI assistant. How can I help you today?" }
+  ]);
+  const [input, setInput] = useState('');
+
+  const handleSend = () => {
+    if (!input.trim()) return;
+    const userMsg = input;
+    setMessages(prev => [...prev, { role: 'user', text: userMsg }]);
+    setInput('');
+    
+    // Placeholder for Gemini integration
+    setTimeout(() => {
+      setMessages(prev => [...prev, { role: 'assistant', text: "I'm currently in training, but I'll be ready to help you with personalized fashion advice soon!" }]);
+    }, 1000);
+  };
+
+  return (
+    <div className="fixed bottom-6 right-6 z-[200]">
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.9, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.9, y: 20 }}
+            className="absolute bottom-20 right-0 w-[350px] sm:w-[400px] h-[500px] bg-white rounded-3xl shadow-2xl border border-gray-100 flex flex-col overflow-hidden"
+          >
+            {/* Header */}
+            <div className="bg-black p-6 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-orange-600 flex items-center justify-center">
+                  <Sparkles size={20} className="text-white fill-white" />
+                </div>
+                <div>
+                  <h4 className="text-white font-bold text-sm">Toby</h4>
+                  <p className="text-orange-500 text-[10px] font-bold uppercase tracking-wider">AI Assistant</p>
+                </div>
+              </div>
+              <button onClick={() => setIsOpen(false)} className="text-gray-400 hover:text-white transition-colors">
+                <X size={20} />
+              </button>
+            </div>
+
+            {/* Messages */}
+            <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-gray-50/50">
+              {messages.map((m, i) => (
+                <div key={i} className={`flex ${m.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                  <div className={`max-w-[80%] p-4 rounded-2xl text-sm ${
+                    m.role === 'user' 
+                      ? 'bg-orange-600 text-white rounded-tr-none shadow-lg shadow-orange-600/20' 
+                      : 'bg-white text-gray-700 border border-gray-100 rounded-tl-none shadow-sm'
+                  }`}>
+                    {m.text}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Input */}
+            <div className="p-4 border-t border-gray-100 bg-white">
+              <div className="relative">
+                <input 
+                  type="text" 
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  onKeyDown={(e) => e.key === 'Enter' && handleSend()}
+                  placeholder="Ask about fashion..."
+                  className="w-full pl-4 pr-12 py-3 bg-gray-50 border border-gray-100 rounded-xl focus:outline-none focus:border-orange-500 transition-colors text-sm"
+                />
+                <button 
+                  onClick={handleSend}
+                  className="absolute right-2 top-1.5 p-1.5 bg-black text-white rounded-lg hover:bg-orange-600 transition-colors"
+                >
+                  <Send size={16} />
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <motion.button 
+        whileHover={{ scale: 1.05 }}
+        whileTap={{ scale: 0.95 }}
+        onClick={() => setIsOpen(!isOpen)}
+        className="w-16 h-16 rounded-full bg-black shadow-2xl flex items-center justify-center text-white relative group border-4 border-white"
+      >
+        <div className="absolute inset-0 bg-orange-600 rounded-full scale-0 group-hover:scale-100 transition-transform duration-300 -z-10" />
+        <MessageCircle size={28} className={isOpen ? 'hidden' : 'block'} />
+        <X size={28} className={isOpen ? 'block' : 'hidden'} />
+      </motion.button>
+    </div>
+  );
+});
+ChatbotWidget.displayName = 'ChatbotWidget';
 
 const CartDrawer = ({ isOpen, onClose, cart, onRemove, onCheckout }: any) => {
   if (!isOpen) return null;
@@ -1395,6 +1528,12 @@ const OrdersView = ({ orders, onBack }: any) => {
   );
 };
 
+declare global {
+  interface Window {
+    toastTimer: any;
+  }
+}
+
 export default function App() {
   const [currentView, setCurrentView] = useState('home');
   const [activeCategory, setActiveCategory] = useState('');
@@ -1402,9 +1541,14 @@ export default function App() {
   const [wishlist, setWishlist] = useState<any[]>([]);
   const [orders, setOrders] = useState<any[]>([]);
   const [selectedProduct, setSelectedProduct] = useState<any | null>(null);
+
+  const handleProductClick = useCallback((product: any) => setSelectedProduct(product), []);
+  const handleCloseProductModal = useCallback(() => setSelectedProduct(null), []);
+
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isWishlistOpen, setIsWishlistOpen] = useState(false);
+  const [activeSupportModal, setActiveSupportModal] = useState<string | null>(null);
   const [toast, setToast] = useState<string | null>(null);
 
   // Auth state
@@ -1510,22 +1654,23 @@ export default function App() {
     }
   };
 
-  const showToast = (msg: string) => {
+  const showToast = useCallback((msg: string) => {
     setToast(msg);
-    setTimeout(() => setToast(null), 3000);
-  };
+    if (window.toastTimer) clearTimeout(window.toastTimer);
+    window.toastTimer = setTimeout(() => setToast(null), 3000);
+  }, []);
 
-  const handleAddToCart = (product: any, size: string = 'M') => {
+  const handleAddToCart = useCallback((product: any, size: string = 'M') => {
     if (!user) {
       showToast("Please sign in or sign up to proceed to pick up items");
       setShowAuthModal(true);
       return;
     }
-    setCart([...cart, { ...product, selectedSize: size }]);
+    setCart(prev => [...prev, { ...product, selectedSize: size }]);
     showToast(`Added ${product.title} to bag`);
-  };
+  }, [user, showToast]);
 
-  const handleCheckout = () => {
+  const handleCheckout = useCallback(() => {
     if (cart.length === 0) return;
     
     const newOrder = {
@@ -1537,50 +1682,54 @@ export default function App() {
       estimatedDelivery: '3-5 business days'
     };
     
-    const updatedOrders = [newOrder, ...orders];
-    setOrders(updatedOrders);
-    
-    // Simple persistence for the session
-    localStorage.setItem(`orders_${user?.uid || 'guest'}`, JSON.stringify(updatedOrders));
+    setOrders(prev => {
+      const updated = [newOrder, ...prev];
+      localStorage.setItem(`orders_${user?.uid || 'guest'}`, JSON.stringify(updated));
+      return updated;
+    });
     
     setCart([]);
     setIsCartOpen(false);
     setCurrentView('orders');
     showToast(`Order ${newOrder.id} placed successfully!`);
-  };
+  }, [cart, orders, user, showToast]);
 
-  const handleRemoveFromCart = (index: number) => {
-    const newCart = [...cart];
-    newCart.splice(index, 1);
-    setCart(newCart);
-  };
+  const handleRemoveFromCart = useCallback((index: number) => {
+    setCart(prev => {
+      const updated = [...prev];
+      updated.splice(index, 1);
+      return updated;
+    });
+  }, []);
 
-  const handleAddToWishlist = (product: any) => {
+  const handleAddToWishlist = useCallback((product: any) => {
     if (!user) {
       showToast("Please sign in or sign up to proceed to pick up items");
       setShowAuthModal(true);
       return;
     }
-    if (wishlist.some(p => p.id === product.id)) {
-      setWishlist(wishlist.filter(p => p.id !== product.id));
-      showToast(`Removed ${product.title} from wishlist`);
-    } else {
-      setWishlist([...wishlist, product]);
-      showToast(`Added ${product.title} to wishlist`);
-    }
-  };
+    setWishlist(prev => {
+      if (prev.some(p => p.id === product.id)) {
+        showToast(`Removed ${product.title} from wishlist`);
+        return prev.filter(p => p.id !== product.id);
+      } else {
+        showToast(`Added ${product.title} to wishlist`);
+        return [...prev, product];
+      }
+    });
+  }, [user, showToast]);
 
-  const handleRemoveFromWishlist = (id: number) => {
-    setWishlist(wishlist.filter(p => p.id !== id));
-  };
+  const handleRemoveFromWishlist = useCallback((id: number) => {
+    setWishlist(prev => prev.filter(p => p.id !== id));
+  }, []);
 
-  const handleCloseAuthModal = () => {
+  const handleCloseAuthModal = useCallback(() => {
     setShowAuthModal(false);
     setVerificationEmail('');
     setAuthError('');
     setPassword('');
     setConfirmPassword('');
-  };
+  }, []);
 
   const renderAuthModal = () => {
     if (!showAuthModal) return null;
@@ -1740,6 +1889,56 @@ export default function App() {
       <AnimatePresence>
         {renderAuthModal()}
       </AnimatePresence>
+
+      {/* Modals placed OUTSIDE the backdrop-blur wrapper so position:fixed works perfectly relative to the screen */}
+      <SearchOverlay 
+        isOpen={isSearchOpen} 
+        onClose={() => setIsSearchOpen(false)} 
+        onProductClick={setSelectedProduct}
+      />
+
+      <AnimatePresence>
+        {selectedProduct && (
+          <ProductModal 
+            product={selectedProduct} 
+            onClose={handleCloseProductModal}
+            onAddToCart={handleAddToCart}
+            onAddToWishlist={handleAddToWishlist}
+            wishlist={wishlist}
+          />
+        )}
+      </AnimatePresence>
+
+      <CartDrawer 
+        isOpen={isCartOpen}
+        onClose={useCallback(() => setIsCartOpen(false), [])}
+        cart={cart}
+        onRemove={handleRemoveFromCart}
+        onCheckout={handleCheckout}
+      />
+
+      <WishlistDrawer 
+        isOpen={isWishlistOpen}
+        onClose={useCallback(() => setIsWishlistOpen(false), [])}
+        wishlist={wishlist}
+        onRemove={handleRemoveFromWishlist}
+        onAddToCart={handleAddToCart}
+      />
+
+      <AnimatePresence>
+        {toast && (
+          <motion.div 
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 50 }}
+            className="fixed bottom-8 left-1/2 -translate-x-1/2 z-[200] bg-black text-white px-6 py-3 rounded-full shadow-2xl flex items-center gap-3 font-medium"
+          >
+            <Check size={18} className="text-green-400" />
+            {toast}
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <div className="min-h-screen bg-white/95 backdrop-blur-sm">
         <Navbar 
           activeCategory={activeCategory} 
@@ -1754,20 +1953,23 @@ export default function App() {
           user={user}
           onLogin={() => setShowAuthModal(true)}
           onLogout={handleLogout}
+          onSupportClick={setActiveSupportModal}
         />
         
         {currentView === 'home' ? (
           <>
-            <Hero user={user} onLogin={() => setShowAuthModal(true)} onLogout={handleLogout} setCurrentView={setCurrentView} />
+            <Hero user={user} onLogin={useCallback(() => setShowAuthModal(true), [])} onLogout={handleLogout} setCurrentView={setCurrentView} />
             
             <TrendingSection 
-              onProductClick={setSelectedProduct} 
+              onProductClick={handleProductClick} 
               onAddToCart={handleAddToCart}
+              onAddToWishlist={handleAddToWishlist}
+              wishlist={wishlist}
             />
             
             <FeaturedProducts 
               activeCategory={activeCategory} 
-              onProductClick={setSelectedProduct}
+              onProductClick={handleProductClick}
               onAddToCart={handleAddToCart}
               onAddToWishlist={handleAddToWishlist}
               wishlist={wishlist}
@@ -1776,64 +1978,25 @@ export default function App() {
             <PromoSection setCurrentView={setCurrentView} setActiveCategory={setActiveCategory} />
           </>
         ) : currentView === 'orders' ? (
-          <OrdersView orders={orders} onBack={() => setCurrentView('home')} />
+          <OrdersView orders={orders} onBack={useCallback(() => setCurrentView('home'), [])} />
         ) : (
           <AboutSection />
         )}
         
-        <Footer setCurrentView={setCurrentView} setActiveCategory={setActiveCategory} />
+        <Footer setCurrentView={setCurrentView} setActiveCategory={setActiveCategory} onSupportClick={setActiveSupportModal} />
+      </div>
 
-        {/* Search Overlay */}
-        <SearchOverlay 
-          isOpen={isSearchOpen} 
-          onClose={() => setIsSearchOpen(false)} 
-          onProductClick={setSelectedProduct}
-        />
-
-        {/* Product Details Modal */}
-        {selectedProduct && (
-          <ProductModal 
-            product={selectedProduct} 
-            onClose={() => setSelectedProduct(null)}
-            onAddToCart={handleAddToCart}
-            onAddToWishlist={handleAddToWishlist}
-            wishlist={wishlist}
+      <AnimatePresence>
+        {activeSupportModal && SUPPORT_SECTIONS[activeSupportModal] && (
+          <FooterModal 
+            title={SUPPORT_SECTIONS[activeSupportModal].title}
+            content={SUPPORT_SECTIONS[activeSupportModal].render()}
+            onClose={() => setActiveSupportModal(null)}
           />
         )}
+      </AnimatePresence>
 
-        {/* Cart Drawer */}
-        <CartDrawer 
-          isOpen={isCartOpen}
-          onClose={() => setIsCartOpen(false)}
-          cart={cart}
-          onRemove={handleRemoveFromCart}
-          onCheckout={handleCheckout}
-        />
-
-        {/* Wishlist Drawer */}
-        <WishlistDrawer 
-          isOpen={isWishlistOpen}
-          onClose={() => setIsWishlistOpen(false)}
-          wishlist={wishlist}
-          onRemove={handleRemoveFromWishlist}
-          onAddToCart={handleAddToCart}
-        />
-
-        {/* Toast Notifications */}
-        <AnimatePresence>
-          {toast && (
-            <motion.div 
-              initial={{ opacity: 0, y: 50 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 50 }}
-              className="fixed bottom-8 left-1/2 -translate-x-1/2 z-[100] bg-black text-white px-6 py-3 rounded-full shadow-2xl flex items-center gap-3 font-medium"
-            >
-              <Check size={18} className="text-green-400" />
-              {toast}
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </div>
+      <ChatbotWidget />
     </div>
   );
 }

@@ -91,7 +91,7 @@ const Navbar = memo(({ activeCategory, setActiveCategory, currentView, setCurren
             ))}
           </div>
 
-          <div className="flex items-center gap-2 sm:gap-6">
+          <div className="flex items-center gap-1.5 sm:gap-6">
             <button onClick={onSearchClick} className="text-black hover:text-gray-600 transition-colors hidden sm:block">
               <Search size={20} strokeWidth={1.5} />
             </button>
@@ -112,7 +112,7 @@ const Navbar = memo(({ activeCategory, setActiveCategory, currentView, setCurren
               )}
             </button>
 
-            <div className="flex items-center gap-1 sm:gap-3 ml-1 sm:ml-2 border-l border-gray-200 pl-2 sm:pl-4">
+            <div className="flex items-center gap-1 sm:gap-3 ml-0 sm:ml-2 border-l border-gray-200 pl-1.5 sm:pl-4">
               {user ? (
                 <button 
                   onClick={() => setCurrentView('orders')}
@@ -132,16 +132,16 @@ const Navbar = memo(({ activeCategory, setActiveCategory, currentView, setCurren
                   </span>
                 </button>
               ) : (
-                <div className="flex items-center gap-0.5 sm:gap-2">
+                <div className="flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-2">
                   <button 
                     onClick={onLogin}
-                    className="text-[8px] sm:text-[11px] font-bold uppercase tracking-widest px-1.5 sm:px-2 py-2 hover:text-orange-600 transition-colors text-black"
+                    className="text-[8px] sm:text-[11px] font-bold uppercase tracking-widest px-2 py-0.5 sm:py-2 hover:text-orange-600 transition-colors text-black leading-tight"
                   >
                     Log In
                   </button>
                   <button 
                     onClick={onLogin}
-                    className="text-[8px] sm:text-[11px] font-bold uppercase tracking-widest px-2.5 sm:px-5 py-2 bg-black text-white rounded-full hover:bg-orange-600 transition-all shadow-md active:scale-95 whitespace-nowrap"
+                    className="text-[8px] sm:text-[11px] font-bold uppercase tracking-widest px-3 sm:px-5 py-1 sm:py-2 bg-black text-white rounded-full hover:bg-orange-600 transition-all shadow-md active:scale-95 whitespace-nowrap leading-tight mt-0.5 sm:mt-0"
                   >
                     Sign Up
                   </button>
@@ -543,10 +543,14 @@ const Hero = memo(({ setCurrentView }: any) => {
           transition={{ duration: 0.8, ease: "easeOut" }}
           className="flex flex-col items-start"
         >
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/80 backdrop-blur-sm border border-gray-200 mb-6 shadow-sm">
+          <motion.div 
+            animate={{ scale: [1, 1.05, 1] }}
+            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/80 backdrop-blur-sm border border-gray-200 mb-6 shadow-sm"
+          >
             <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse" />
             <span className="text-xs font-medium uppercase tracking-wider text-gray-800">New Collection 2026</span>
-          </div>
+          </motion.div>
           <h1 className="text-6xl sm:text-7xl lg:text-8xl font-serif font-bold leading-[0.9] tracking-tight mb-6 text-black">
             DEFINE<br />
             <span className="italic font-light text-gray-500">YOUR</span><br />
@@ -1450,11 +1454,18 @@ const WishlistDrawer = ({ isOpen, onClose, wishlist, onRemove, onAddToCart }: an
 const LookbookView = ({ onBack }: any) => {
   const lookbookImages = [
     { url: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=1020&auto=format&fit=crop', title: 'Urban Rhythm', subtitle: 'Summer 2026' },
-    { url: 'https://images.unsplash.com/photo-1539109132314-34a93825a0b7?q=80&w=1000&auto=format&fit=crop', title: 'Midnight Muse', subtitle: 'Outerwear' },
+    { url: 'https://www.next.co.uk/cms/resource/blob/1676428/c1cca7ba6b2508943857bbee41fec07e/brandcampaign-4x5-1-1--data.jpg', title: 'Midnight Muse', subtitle: 'Outerwear' },
     { url: 'https://images.unsplash.com/photo-1496747611176-843222e1e57c?q=80&w=1000&auto=format&fit=crop', title: 'Ethereal Flow', subtitle: 'Evening Wear' },
     { url: 'https://images.unsplash.com/photo-1509631179647-0177331693ae?q=80&w=1000&auto=format&fit=crop', title: 'Grit & Grace', subtitle: 'Street Edge' },
     { url: 'https://images.unsplash.com/photo-1485230895905-ec40ba36b9bc?q=80&w=1000&auto=format&fit=crop', title: 'Classic Rewind', subtitle: 'Heritage' },
-    { url: 'https://images.unsplash.com/photo-1529139513466-4209121f618a?q=80&w=1000&auto=format&fit=crop', title: 'Vanguard', subtitle: 'Avant-Garde' }
+    { url: 'https://cdn.mos.cms.futurecdn.net/6LiZmzi5uGGMFBoWP6PydE.jpg', title: 'Vanguard', subtitle: 'Avant-Garde' },
+    { url: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ1mpa7N9dEdsK1JvKG_gs2SbTvkIFCo1w7tw&s', title: 'Noble Essence', subtitle: 'Portrait' },
+    { url: 'https://s.alicdn.com/@sc04/kf/Hcdbddb3069534d14acaa7ddc483b779ek/European-and-American-Style-Elegant-New-Women-s-Wear-Heavy-Duty-3D-Floral-Solid-Color-Dress-African-Fashion-Sleeveless-Strap-Max.jpg_300x300.jpg', title: 'Flora & Form', subtitle: 'Elegant' },
+    { url: 'https://i.pinimg.com/736x/4e/1a/49/4e1a49e015307cb28548a4b8c2d5717a.jpg', title: 'Parisian Chic', subtitle: 'Editorial' },
+    { url: 'https://images.unsplash.com/photo-1532453288672-3a27e9be9efd?q=80&w=464&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', title: 'Velvet Hour', subtitle: 'Luxury' },
+    { url: 'https://images.unsplash.com/photo-1686491730848-0c86413833e5?w=300&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fGZhc2hpb24lMjB3ZWFyc3xlbnwwfHwwfHx8MA%3D%3D', title: 'Modern Ethos', subtitle: 'Minimalist' },
+    { url: 'https://images.unsplash.com/photo-1574201635302-388dd92a4c3f?q=80&w=465&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', title: 'Saffron Soul', subtitle: 'Fusion' },
+    { url: 'https://plus.unsplash.com/premium_photo-1707932495000-5748b915e4f2?q=80&w=435&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', title: 'Luxe Minimal', subtitle: 'Premium' }
   ];
 
   return (

@@ -8,11 +8,11 @@ import { onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndP
 import { PRODUCT_DATA } from './data/products';
 
 const Logo = memo(() => (
-  <div className="flex items-center gap-1.5 sm:gap-2 cursor-pointer">
-    <Shirt className="text-orange-500 w-5 h-5 sm:w-7 sm:h-7" strokeWidth={2} />
-    <span className="font-serif font-bold text-lg sm:text-2xl tracking-wide uppercase">
+  <div className="flex items-center gap-1 sm:gap-2 cursor-pointer">
+    <Shirt className="text-orange-500 w-4 h-4 sm:w-7 sm:h-7" strokeWidth={2} />
+    <span className="font-serif font-bold text-base sm:text-2xl tracking-wide uppercase">
       <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-500 via-orange-600 to-red-600">TRENDY</span>
-      <span className="text-black">TRANSIT</span>
+      <span className="text-black transition-all">TRANSIT</span>
     </span>
   </div>
 ));
@@ -25,7 +25,7 @@ const Navbar = memo(({ activeCategory, setActiveCategory, currentView, setCurren
   return (
     <>
       <nav className="sticky top-0 left-0 w-full z-40 backdrop-blur-lg bg-white/90 border-b border-gray-200 shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 sm:h-20 flex items-center justify-between gap-4">
+        <div className="max-w-7xl mx-auto px-2 sm:px-6 h-16 sm:h-20 flex items-center justify-between gap-2 sm:gap-4">
           <div onClick={() => setCurrentView('home')}>
             <Logo />
           </div>
@@ -42,6 +42,24 @@ const Navbar = memo(({ activeCategory, setActiveCategory, currentView, setCurren
             >
               Home
               {currentView === 'home' && !categories.includes(activeCategory) && (
+                <motion.div 
+                  layoutId="activeNavUnderline"
+                  className="absolute -bottom-1 left-0 right-0 h-1 bg-orange-600 rounded-full"
+                  transition={{ type: 'spring', stiffness: 380, damping: 30 }}
+                />
+              )}
+            </button>
+
+            <button 
+              onClick={() => {
+                setCurrentView('lookbook');
+              }}
+              className={`relative text-sm font-medium transition-colors uppercase tracking-wide py-1 ${
+                currentView === 'lookbook' ? 'text-orange-600' : 'text-gray-600 hover:text-black'
+              }`}
+            >
+              Lookbook
+              {currentView === 'lookbook' && (
                 <motion.div 
                   layoutId="activeNavUnderline"
                   className="absolute -bottom-1 left-0 right-0 h-1 bg-orange-600 rounded-full"
@@ -73,12 +91,12 @@ const Navbar = memo(({ activeCategory, setActiveCategory, currentView, setCurren
             ))}
           </div>
 
-          <div className="flex items-center gap-3 sm:gap-6">
+          <div className="flex items-center gap-2 sm:gap-6">
             <button onClick={onSearchClick} className="text-black hover:text-gray-600 transition-colors hidden sm:block">
               <Search size={20} strokeWidth={1.5} />
             </button>
             <button onClick={onWishlistClick} className="text-black hover:text-gray-600 transition-colors relative">
-              <Heart size={20} strokeWidth={1.5} />
+              <Heart className="w-4.5 h-4.5 sm:w-5 sm:h-5" strokeWidth={1.5} />
               {wishlistCount > 0 && (
                 <span className="absolute -top-1.5 -right-1.5 w-3.5 h-3.5 sm:w-4 sm:h-4 bg-gradient-to-r from-orange-500 to-red-500 text-white text-[8px] sm:text-[9px] font-bold rounded-full flex items-center justify-center">
                   {wishlistCount}
@@ -86,18 +104,56 @@ const Navbar = memo(({ activeCategory, setActiveCategory, currentView, setCurren
               )}
             </button>
             <button onClick={onCartClick} className="text-black hover:text-gray-600 transition-colors relative">
-              <ShoppingBag size={20} strokeWidth={1.5} />
+              <ShoppingBag className="w-4.5 h-4.5 sm:w-5 sm:h-5" strokeWidth={1.5} />
               {cartCount > 0 && (
                 <span className="absolute -top-1.5 -right-1.5 w-3.5 h-3.5 sm:w-4 sm:h-4 bg-gradient-to-r from-orange-500 to-red-500 text-white text-[8px] sm:text-[9px] font-bold rounded-full flex items-center justify-center">
                   {cartCount}
                 </span>
               )}
             </button>
+
+            <div className="flex items-center gap-1 sm:gap-3 ml-1 sm:ml-2 border-l border-gray-200 pl-2 sm:pl-4">
+              {user ? (
+                <button 
+                  onClick={() => setCurrentView('orders')}
+                  className="flex items-center gap-2 group transition-all"
+                >
+                  <div className="relative">
+                    {user.photoURL ? (
+                      <img src={user.photoURL} alt="User" className="w-8 h-8 sm:w-9 sm:h-9 rounded-full border-2 border-transparent group-hover:border-orange-500 transition-all" />
+                    ) : (
+                      <div className="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-orange-50 text-orange-600 flex items-center justify-center border-2 border-transparent group-hover:border-orange-500 transition-all">
+                        <User size={16} />
+                      </div>
+                    )}
+                  </div>
+                  <span className="hidden lg:block text-[10px] font-bold uppercase tracking-widest text-black group-hover:text-orange-600 transition-colors">
+                    {user.displayName?.split(' ')[0] || 'Me'}
+                  </span>
+                </button>
+              ) : (
+                <div className="flex items-center gap-0.5 sm:gap-2">
+                  <button 
+                    onClick={onLogin}
+                    className="text-[8px] sm:text-[11px] font-bold uppercase tracking-widest px-1.5 sm:px-2 py-2 hover:text-orange-600 transition-colors text-black"
+                  >
+                    Log In
+                  </button>
+                  <button 
+                    onClick={onLogin}
+                    className="text-[8px] sm:text-[11px] font-bold uppercase tracking-widest px-2.5 sm:px-5 py-2 bg-black text-white rounded-full hover:bg-orange-600 transition-all shadow-md active:scale-95 whitespace-nowrap"
+                  >
+                    Sign Up
+                  </button>
+                </div>
+              )}
+            </div>
+
             <button 
               onClick={() => setIsOpen(true)}
-              className="text-black hover:text-gray-600 transition-colors"
+              className="text-black hover:text-gray-600 transition-colors ml-1 sm:ml-2"
             >
-              <Menu size={24} strokeWidth={1.5} />
+              <Menu className="w-5 h-5 sm:w-6 sm:h-6" strokeWidth={1.5} />
             </button>
           </div>
         </div>
@@ -156,6 +212,22 @@ const Navbar = memo(({ activeCategory, setActiveCategory, currentView, setCurren
                 >
                   My Orders
                   <ChevronRight className={`transition-opacity ${currentView === 'orders' ? 'opacity-100 text-orange-600' : 'opacity-0 group-hover:opacity-100 text-black'}`} />
+                </motion.button>
+
+                <motion.button 
+                  initial={{ opacity: 0, x: 20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.18 }}
+                  onClick={() => {
+                    setCurrentView('lookbook');
+                    setIsOpen(false);
+                  }}
+                  className={`text-3xl font-serif font-medium flex items-center justify-between group text-left ${
+                    currentView === 'lookbook' ? 'text-orange-600' : 'text-gray-400 hover:text-black'
+                  }`}
+                >
+                  Lookbook
+                  <ChevronRight className={`transition-opacity ${currentView === 'lookbook' ? 'opacity-100 text-orange-600' : 'opacity-0 group-hover:opacity-100 text-black'}`} />
                 </motion.button>
 
                 {categories.map((item, i) => (
@@ -235,34 +307,11 @@ const Navbar = memo(({ activeCategory, setActiveCategory, currentView, setCurren
                     </div>
                   </>
                 ) : (
-                  <>
-                    <div className="flex items-center gap-3 mb-4 p-4 bg-gray-50 rounded-xl">
-                      <div className="w-10 h-10 rounded-full bg-gray-200 text-gray-500 flex items-center justify-center">
-                        <User size={20} />
-                      </div>
-                      <div>
-                        <div className="font-bold text-sm">Guest User</div>
-                        <div className="text-xs text-gray-500">Unregistered Profile</div>
-                      </div>
-                    </div>
-                    <button onClick={() => { onLogin(); setIsOpen(false); }} className="w-full py-4 rounded-xl bg-gray-100 text-black font-bold hover:bg-gray-200 transition-colors uppercase tracking-widest text-sm mb-3">
-                      Log In / Sign Up
-                    </button>
-                    <div className="flex gap-2">
-                      <button 
-                        onClick={() => { setCurrentView('orders'); setIsOpen(false); }}
-                        className="flex-1 py-3 rounded-xl border border-gray-200 text-gray-500 font-bold hover:bg-gray-50 transition-colors uppercase tracking-widest text-[10px] flex items-center justify-center gap-2"
-                      >
-                        <Package size={14} /> Orders
-                      </button>
-                      <button 
-                        onClick={() => { onLogout(); setIsOpen(false); }}
-                        className="flex-1 py-3 rounded-xl border border-gray-200 text-gray-400 font-bold hover:bg-gray-50 transition-colors uppercase tracking-widest text-[10px] flex items-center justify-center gap-2"
-                      >
-                        <LogOut size={14} /> Exit
-                      </button>
-                    </div>
-                  </>
+                  <div className="p-6 bg-orange-50 rounded-3xl border border-orange-100 text-center">
+                    <Sparkles className="mx-auto text-orange-600 mb-2" size={24} />
+                    <p className="text-xs font-bold uppercase tracking-widest text-orange-600 mb-1">New Collection</p>
+                    <p className="text-[10px] text-orange-900/60 leading-relaxed">Early access to summer drops is live. Check your wishlist.</p>
+                  </div>
                 )}
               </motion.div>
             </motion.div>
@@ -474,7 +523,7 @@ const ProductModal = memo(({ product, onClose, onAddToCart, onAddToWishlist, wis
 });
 ProductModal.displayName = 'ProductModal';
 
-const Hero = memo(({ user, onLogin, onLogout, setCurrentView }: any) => {
+const Hero = memo(({ setCurrentView }: any) => {
   return (
     <section className="relative min-h-[calc(100vh-112px)] flex items-center overflow-hidden">
       <div 
@@ -510,64 +559,13 @@ const Hero = memo(({ user, onLogin, onLogout, setCurrentView }: any) => {
             <a href="#featured-products" className="px-8 py-4 rounded-full bg-gradient-to-r from-orange-500 to-red-600 text-white font-semibold hover:scale-105 transition-transform flex items-center gap-2 shadow-lg shadow-orange-500/20">
               Shop Now <ArrowRight size={18} />
             </a>
-            <a href="#lookbook" className="px-8 py-4 rounded-full border-2 border-black text-black font-semibold hover:bg-black hover:text-white transition-colors bg-white/50 backdrop-blur-sm">
+            <button 
+              onClick={() => setCurrentView('lookbook')}
+              className="px-8 py-4 rounded-full border-2 border-black text-black font-semibold hover:bg-black hover:text-white transition-colors bg-white/50 backdrop-blur-sm"
+            >
               View Lookbook
-            </a>
+            </button>
           </div>
-
-          {user ? (
-            <div className="mt-10 p-6 bg-white/80 backdrop-blur-md rounded-2xl border border-gray-200 shadow-xl flex flex-col sm:flex-row items-center gap-6 w-full sm:w-auto">
-              <div className="flex items-center gap-4">
-                {user.photoURL ? (
-                  <img src={user.photoURL} alt="Profile" className="w-16 h-16 rounded-full border-2 border-orange-500" />
-                ) : (
-                  <div className="w-16 h-16 rounded-full bg-orange-100 text-orange-600 flex items-center justify-center border-2 border-orange-500">
-                    <User size={32} />
-                  </div>
-                )}
-                <div>
-                  <div className="text-sm font-bold text-gray-400 uppercase tracking-widest">Logged in as:</div>
-                  <div className="text-xl font-bold text-black font-serif">{user.displayName || user.email?.split('@')[0] || 'Member'}</div>
-                  <div className="text-xs text-gray-500 font-medium">{user.email}</div>
-                </div>
-              </div>
-              <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
-                <button 
-                  onClick={() => setCurrentView('orders')}
-                  className="px-6 py-3 rounded-xl bg-gray-100 text-black font-bold hover:bg-gray-200 transition-all flex items-center justify-center gap-2 text-sm"
-                >
-                  <Package size={16} />
-                  My Orders
-                </button>
-                <button 
-                  onClick={onLogout}
-                  className="px-6 py-3 rounded-xl bg-black text-white font-bold hover:bg-gray-900 transition-all flex items-center justify-center gap-2 text-sm shadow-lg whitespace-nowrap"
-                >
-                  <LogOut size={16} className="text-orange-500" />
-                  Log Out
-                </button>
-              </div>
-            </div>
-          ) : (
-            <div className="mt-10 flex flex-col sm:flex-row items-start sm:items-center gap-4 w-full sm:w-auto">
-              <div className="text-sm font-bold text-gray-400 uppercase tracking-widest mb-2 sm:mb-0 sm:mr-4">Join the transit:</div>
-              <div className="flex gap-4">
-                <button 
-                  onClick={onLogin} 
-                  className="px-6 py-3 rounded-xl bg-black text-white font-bold hover:bg-gray-900 transition-all shadow-xl flex items-center gap-2 group text-sm"
-                >
-                  <User size={16} className="group-hover:text-orange-500 transition-colors" />
-                  Log In
-                </button>
-                <button 
-                  onClick={onLogin} 
-                  className="px-6 py-3 rounded-xl border-2 border-orange-600 text-orange-600 font-bold hover:bg-orange-600 hover:text-white transition-all shadow-lg text-sm"
-                >
-                  Sign Up
-                </button>
-              </div>
-            </div>
-          )}
         </motion.div>
 
         <motion.div 
@@ -1449,6 +1447,73 @@ const WishlistDrawer = ({ isOpen, onClose, wishlist, onRemove, onAddToCart }: an
   );
 };
 
+const LookbookView = ({ onBack }: any) => {
+  const lookbookImages = [
+    { url: 'https://images.unsplash.com/photo-1515886657613-9f3515b0c78f?q=80&w=1020&auto=format&fit=crop', title: 'Urban Rhythm', subtitle: 'Summer 2026' },
+    { url: 'https://images.unsplash.com/photo-1539109132314-34a93825a0b7?q=80&w=1000&auto=format&fit=crop', title: 'Midnight Muse', subtitle: 'Outerwear' },
+    { url: 'https://images.unsplash.com/photo-1496747611176-843222e1e57c?q=80&w=1000&auto=format&fit=crop', title: 'Ethereal Flow', subtitle: 'Evening Wear' },
+    { url: 'https://images.unsplash.com/photo-1509631179647-0177331693ae?q=80&w=1000&auto=format&fit=crop', title: 'Grit & Grace', subtitle: 'Street Edge' },
+    { url: 'https://images.unsplash.com/photo-1485230895905-ec40ba36b9bc?q=80&w=1000&auto=format&fit=crop', title: 'Classic Rewind', subtitle: 'Heritage' },
+    { url: 'https://images.unsplash.com/photo-1529139513466-4209121f618a?q=80&w=1000&auto=format&fit=crop', title: 'Vanguard', subtitle: 'Avant-Garde' }
+  ];
+
+  return (
+    <div className="max-w-7xl mx-auto px-6 py-20 min-h-screen">
+      <div className="flex items-center gap-4 mb-16">
+        <button onClick={onBack} className="p-2 hover:bg-gray-100 rounded-full transition-colors text-gray-500">
+          <ArrowRight className="rotate-180" size={24} />
+        </button>
+        <div>
+          <h1 className="text-5xl font-serif font-bold tracking-tight">Lookbook</h1>
+          <p className="text-gray-500 mt-2 uppercase tracking-widest text-xs font-bold">New Collection / 2026</p>
+        </div>
+      </div>
+
+      <div className="columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6">
+        {lookbookImages.map((item, i) => (
+          <motion.div 
+            key={i}
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ delay: i * 0.1 }}
+            className="relative group cursor-pointer overflow-hidden rounded-3xl"
+          >
+            <img 
+              src={item.url} 
+              alt={item.title} 
+              className="w-full object-cover transition-transform duration-700 group-hover:scale-110"
+              referrerPolicy="no-referrer"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-8">
+              <p className="text-orange-500 text-xs font-bold uppercase tracking-widest mb-1">{item.subtitle}</p>
+              <h3 className="text-white text-2xl font-serif font-bold">{item.title}</h3>
+            </div>
+          </motion.div>
+        ))}
+      </div>
+      
+      <div className="mt-20 p-20 bg-black rounded-[4rem] text-center relative overflow-hidden">
+        <div className="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')]" />
+        <motion.div
+           initial={{ opacity: 0, scale: 0.9 }}
+           whileInView={{ opacity: 1, scale: 1 }}
+           viewport={{ once: true }}
+           className="relative z-10"
+        >
+          <h2 className="text-white text-4xl sm:text-6xl font-serif font-bold mb-6">READY TO DEFINE YOURS?</h2>
+          <button 
+            onClick={onBack}
+            className="px-10 py-5 bg-white text-black font-bold rounded-full hover:bg-orange-500 hover:text-white transition-all transform hover:scale-105 shadow-2xl"
+          >
+            EXPLORE COLLECTION
+          </button>
+        </motion.div>
+      </div>
+    </div>
+  );
+};
+
 const OrdersView = ({ orders, onBack }: any) => {
   return (
     <div className="max-w-4xl mx-auto px-6 py-20 min-h-screen">
@@ -1911,7 +1976,7 @@ export default function App() {
 
       <CartDrawer 
         isOpen={isCartOpen}
-        onClose={useCallback(() => setIsCartOpen(false), [])}
+        onClose={() => setIsCartOpen(false)}
         cart={cart}
         onRemove={handleRemoveFromCart}
         onCheckout={handleCheckout}
@@ -1919,7 +1984,7 @@ export default function App() {
 
       <WishlistDrawer 
         isOpen={isWishlistOpen}
-        onClose={useCallback(() => setIsWishlistOpen(false), [])}
+        onClose={() => setIsWishlistOpen(false)}
         wishlist={wishlist}
         onRemove={handleRemoveFromWishlist}
         onAddToCart={handleAddToCart}
@@ -1958,7 +2023,7 @@ export default function App() {
         
         {currentView === 'home' ? (
           <>
-            <Hero user={user} onLogin={useCallback(() => setShowAuthModal(true), [])} onLogout={handleLogout} setCurrentView={setCurrentView} />
+            <Hero setCurrentView={setCurrentView} />
             
             <TrendingSection 
               onProductClick={handleProductClick} 
@@ -1978,7 +2043,9 @@ export default function App() {
             <PromoSection setCurrentView={setCurrentView} setActiveCategory={setActiveCategory} />
           </>
         ) : currentView === 'orders' ? (
-          <OrdersView orders={orders} onBack={useCallback(() => setCurrentView('home'), [])} />
+          <OrdersView orders={orders} onBack={() => setCurrentView('home')} />
+        ) : currentView === 'lookbook' ? (
+          <LookbookView onBack={() => setCurrentView('home')} />
         ) : (
           <AboutSection />
         )}

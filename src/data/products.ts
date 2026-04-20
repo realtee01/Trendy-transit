@@ -86,9 +86,9 @@ export const PRODUCT_DATA: Record<string, any[]> = {
       reviews: [{ user: "Ryan B.", rating: 4, comment: "Great pockets, very comfortable for daily wear." }] 
     },
     { 
-      id: 118, title: "Casual Linen-Blend Blazer", price: 145.00, category: "Men", subCategory: "Formal", image: "https://images.unsplash.com/photo-1593030761757-71fae45fa0e7?q=80&w=800&auto=format&fit=crop", rating: 4.7, 
-      description: "The perfect smart-casual layer. This unlined linen-blend blazer offers a relaxed silhouette and natural breathability for warmer climates.",
-      reviews: [{ user: "Oliver S.", rating: 5, comment: "Perfect for summer weddings." }] 
+      id: 119, title: "Heritage Fleece Hoodie", price: 85.00, category: "Men", subCategory: "Casual", image: "https://u-mercari-images.mercdn.net/photos/m96696865128_1.jpg?width=768&quality=75&_=1764934092", rating: 4.8, isNew: true,
+      description: "A timeless heritage fleece hoodie with a premium heavyweight feel and a vintage-inspired aesthetic. Designed for long-lasting comfort and effortless urban style.",
+      reviews: [{ user: "Marcus T.", rating: 5, comment: "The quality is outstanding. Feels like a true vintage find." }] 
     },
   ],
   'Women': [
@@ -158,7 +158,7 @@ export const PRODUCT_DATA: Record<string, any[]> = {
       reviews: [{ user: "Sophia G.", rating: 5, comment: "Absolutely elegant. My favorite accessory." }, { user: "Emma L.", rating: 5, comment: "Beautiful finish, looks very luxury." }] 
     },
     { 
-      id: 214, title: "Geneva Minimalist Mesh Band Watch - BARTER HUTT", price: 125.00, category: "Women", subCategory: "Accessories", image: "https://www.barterhutt.com/wp-content/uploads/2022/11/BH-7618956.jpg", rating: 4.7, 
+      id: 214, title: "Geneva Minimalist Mesh Band Watch - BARTER HUTT", price: 125.00, category: "Women", subCategory: "Accessories", image: "https://u-mercari-images.mercdn.net/photos/m96696865128_1.jpg?width=768&quality=75&_=1764934092", rating: 4.7, 
       description: "Sleek and versatile. The ultra-thin case and adjustable mesh strap make this watch an effortless companion for any outfit.",
       reviews: [{ user: "Isabella J.", rating: 5, comment: "So light and comfortable. Love the style." }] 
     },

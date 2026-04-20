@@ -115,7 +115,7 @@ const Navbar = memo(({ activeCategory, setActiveCategory, currentView, setCurren
             <div className="flex items-center gap-1 sm:gap-3 ml-0 sm:ml-2 border-l border-gray-200 pl-1.5 sm:pl-4">
               {user ? (
                 <button 
-                  onClick={() => setCurrentView('orders')}
+                  onClick={() => setCurrentView('profile')}
                   className="flex items-center gap-2 group transition-all"
                 >
                   <div className="relative">
@@ -203,15 +203,15 @@ const Navbar = memo(({ activeCategory, setActiveCategory, currentView, setCurren
                   animate={{ opacity: 1, x: 0 }}
                   transition={{ delay: 0.15 }}
                   onClick={() => {
-                    setCurrentView('orders');
+                    setCurrentView('profile');
                     setIsOpen(false);
                   }}
                   className={`text-3xl font-serif font-medium flex items-center justify-between group text-left ${
-                    currentView === 'orders' ? 'text-orange-600' : 'text-gray-400 hover:text-black'
+                    currentView === 'profile' ? 'text-orange-600' : 'text-gray-400 hover:text-black'
                   }`}
                 >
-                  My Orders
-                  <ChevronRight className={`transition-opacity ${currentView === 'orders' ? 'opacity-100 text-orange-600' : 'opacity-0 group-hover:opacity-100 text-black'}`} />
+                  My Profile
+                  <ChevronRight className={`transition-opacity ${currentView === 'profile' ? 'opacity-100 text-orange-600' : 'opacity-0 group-hover:opacity-100 text-black'}`} />
                 </motion.button>
 
                 <motion.button 
@@ -291,16 +291,24 @@ const Navbar = memo(({ activeCategory, setActiveCategory, currentView, setCurren
                         <div className="text-xs text-gray-500">{user.email}</div>
                       </div>
                     </div>
-                    <div className="flex gap-2">
-                      <button 
-                        onClick={() => { setCurrentView('orders'); setIsOpen(false); }}
-                        className="flex-1 py-3 rounded-xl bg-orange-50 text-orange-600 font-bold hover:bg-orange-100 transition-colors uppercase tracking-widest text-[10px] flex items-center justify-center gap-2"
-                      >
-                        <Package size={14} /> Orders
-                      </button>
+                    <div className="flex flex-col gap-2">
+                      <div className="flex gap-2">
+                        <button 
+                          onClick={() => { setCurrentView('profile'); setIsOpen(false); }}
+                          className="flex-1 py-3 rounded-xl bg-gray-900 text-white font-bold hover:bg-black transition-colors uppercase tracking-widest text-[10px] flex items-center justify-center gap-2"
+                        >
+                          <User size={14} /> Profile
+                        </button>
+                        <button 
+                          onClick={() => { setCurrentView('orders'); setIsOpen(false); }}
+                          className="flex-1 py-3 rounded-xl bg-orange-50 text-orange-600 font-bold hover:bg-orange-100 transition-colors uppercase tracking-widest text-[10px] flex items-center justify-center gap-2"
+                        >
+                          <Package size={14} /> Orders
+                        </button>
+                      </div>
                       <button 
                         onClick={() => { onLogout(); setIsOpen(false); }}
-                        className="flex-1 py-3 rounded-xl bg-gray-100 text-black font-bold hover:bg-gray-200 transition-colors uppercase tracking-widest text-[10px] flex items-center justify-center gap-2"
+                        className="w-full py-3 rounded-xl bg-gray-100 text-black font-bold hover:bg-gray-200 transition-colors uppercase tracking-widest text-[10px] flex items-center justify-center gap-2"
                       >
                         <LogOut size={14} /> Log Out
                       </button>
@@ -415,12 +423,17 @@ const ProductModal = memo(({ product, onClose, onAddToCart, onAddToWishlist, wis
           exit={{ scale: 0.95, opacity: 0, y: 20 }}
           className="relative bg-white w-full max-w-5xl rounded-3xl overflow-hidden flex flex-col md:flex-row shadow-2xl max-h-[90vh] overflow-y-auto"
         >
-          <button onClick={onClose} className="absolute top-4 right-4 z-10 p-2 bg-white/80 backdrop-blur-md rounded-full hover:bg-gray-100 transition-colors">
+          <button onClick={onClose} className="absolute top-4 right-4 z-[80] p-2 bg-white/80 backdrop-blur-md rounded-full hover:bg-gray-100 transition-colors">
             <X size={24} />
           </button>
           
-          <div className="md:w-1/2 bg-gray-100 relative">
-            <img src={product.image} alt={product.title} loading="lazy" className="w-full h-full object-cover aspect-square md:aspect-auto" />
+          <div className="md:w-1/2 bg-gray-100 relative group">
+            <img 
+              src={product.image} 
+              alt={product.title} 
+              loading="lazy" 
+              className="w-full h-full object-cover aspect-square md:aspect-auto h-[400px] md:h-full" 
+            />
           </div>
           
           <div className="md:w-1/2 p-8 md:p-12 flex flex-col">
@@ -509,11 +522,26 @@ const ProductModal = memo(({ product, onClose, onAddToCart, onAddToWishlist, wis
               </button>
             </div>
             
-            <div className="mt-8 pt-8 border-t border-gray-100 grid grid-cols-2 gap-4 text-sm text-gray-500">
-              <div className="flex items-center gap-2"><Check size={16} className="text-green-500"/> In Stock</div>
-              <div className="flex items-center gap-2"><Check size={16} className="text-green-500"/> Free Shipping</div>
-              <div className="flex items-center gap-2"><Check size={16} className="text-green-500"/> 30-Day Returns</div>
-              <div className="flex items-center gap-2"><Check size={16} className="text-green-500"/> Secure Checkout</div>
+            <div className="mt-8 pt-8 border-t border-gray-100 flex flex-col gap-6">
+              <div className="grid grid-cols-2 gap-4 text-sm text-gray-500">
+                <div className="flex items-center gap-2"><Check size={16} className="text-green-500"/> In Stock</div>
+                <div className="flex items-center gap-2"><Check size={16} className="text-green-500"/> Free Shipping</div>
+                <div className="flex items-center gap-2"><Check size={16} className="text-green-500"/> 30-Day Returns</div>
+                <div className="flex items-center gap-2"><Check size={16} className="text-green-500"/> Secure Checkout</div>
+              </div>
+              
+              <div className="p-4 bg-orange-50/50 rounded-2xl border border-orange-100 flex items-center gap-4">
+                <img 
+                  src="https://images.unsplash.com/photo-1614036417651-efe5912149d8?q=80&w=919&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" 
+                  alt="Quality Certificate" 
+                  className="w-12 h-16 object-cover rounded shadow-md border-2 border-white"
+                  referrerPolicy="no-referrer"
+                />
+                <div>
+                  <p className="text-[10px] font-bold uppercase tracking-widest text-orange-900 mb-0.5">Premium Guarantee</p>
+                  <p className="text-xs text-orange-800/80 leading-relaxed font-medium">This product is certified for material excellence and ethical craftsmanship.</p>
+                </div>
+              </div>
             </div>
           </div>
         </motion.div>
@@ -895,13 +923,29 @@ const AboutSection = memo(() => {
                 <p className="text-gray-500 text-sm">To become the global standard for high-performance urban fashion that doesn't compromise on style.</p>
               </div>
             </div>
-            <div className="flex items-center gap-6 p-6 bg-gray-50 rounded-2xl border border-gray-100">
+            <div className="flex items-center gap-6 p-6 bg-gray-50 rounded-2xl border border-gray-100 mb-8">
               <div className="flex -space-x-3">
                 {[1,2,3,4].map(i => (
                   <img key={i} src={`https://picsum.photos/seed/user${i}/100/100`} className="w-10 h-10 rounded-full border-2 border-white object-cover" referrerPolicy="no-referrer" />
                 ))}
               </div>
               <p className="text-sm text-gray-500"><span className="font-bold text-black">50,000+</span> satisfied transitters worldwide.</p>
+            </div>
+
+            <div className="flex items-start gap-6 p-8 bg-black text-white rounded-3xl relative overflow-hidden group">
+              <div className="absolute top-0 right-0 w-32 h-32 bg-orange-600/20 blur-3xl rounded-full -mr-16 -mt-16 group-hover:scale-150 transition-transform duration-700" />
+              <img 
+                src="https://images.unsplash.com/photo-1614036417651-efe5912149d8?q=80&w=919&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" 
+                alt="Fashion Certificate" 
+                className="w-20 h-28 object-cover rounded-lg shadow-xl relative z-10 hover:scale-105 transition-transform"
+                referrerPolicy="no-referrer"
+              />
+              <div className="relative z-10">
+                <h4 className="text-xl font-serif font-bold mb-2">Our Credentials</h4>
+                <p className="text-gray-400 text-sm leading-relaxed">
+                  We are proud to be an accredited partner of the International Fashion Council. Our manufacturing processes and design quality are certified for excellence in the global fashion industry.
+                </p>
+              </div>
             </div>
           </motion.div>
           
@@ -913,7 +957,7 @@ const AboutSection = memo(() => {
           >
             <div className="aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl relative z-10">
               <img 
-                src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=870&auto=format&fit=crop" 
+                src="https://images.unsplash.com/photo-1546213290-e1b492ab3eee?q=80&w=774&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3Dl" 
                 alt="Our Workspace"
                 className="w-full h-full object-cover"
                 referrerPolicy="no-referrer"
@@ -1186,9 +1230,21 @@ const Footer = memo(({ setCurrentView, setActiveCategory, onSupportClick }: any)
             <div className="mb-6">
               <Logo />
             </div>
-            <p className="text-gray-500 max-w-sm leading-relaxed">
+            <p className="text-gray-500 max-w-sm leading-relaxed mb-6">
               Elevating everyday transit with premium, crafted apparel and accessories. Step into the future of fashion.
             </p>
+            <div className="p-4 bg-gray-50 rounded-2xl border border-gray-100 inline-flex items-center gap-4 group hover:border-black transition-all">
+              <img 
+                src="https://images.unsplash.com/photo-1614036417651-efe5912149d8?q=80&w=919&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" 
+                alt="Fashion Industry Certificate" 
+                className="w-10 h-14 object-cover rounded bg-white shadow-sm grayscale group-hover:grayscale-0 transition-all"
+                referrerPolicy="no-referrer"
+              />
+              <div>
+                <p className="text-[10px] font-bold uppercase tracking-widest text-black mb-0.5">Certified Excellence</p>
+                <p className="text-[9px] text-gray-500 leading-tight">Accredited Member of Global<br/>Fashion Institute 2024</p>
+              </div>
+            </div>
           </div>
           <div>
             <h4 className="font-bold text-black mb-6 font-sans text-sm tracking-widest uppercase">Shop</h4>
@@ -1387,10 +1443,19 @@ const CartDrawer = ({ isOpen, onClose, cart, onRemove, onCheckout }: any) => {
                 </div>
                 <button 
                   onClick={() => onCheckout()}
-                  className="w-full py-4 bg-black text-white font-bold rounded-xl hover:bg-gray-900 transition-colors shadow-lg"
+                  className="w-full py-4 bg-black text-white font-bold rounded-xl hover:bg-gray-900 transition-colors shadow-lg mb-6"
                 >
                   Confirm Order
                 </button>
+                <div className="flex items-center gap-3 opacity-60 grayscale hover:grayscale-0 transition-all justify-center">
+                   <img 
+                    src="https://images.unsplash.com/photo-1614036417651-efe5912149d8?q=80&w=919&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" 
+                    alt="Trust Certificate" 
+                    className="w-6 h-8 object-cover rounded"
+                    referrerPolicy="no-referrer"
+                  />
+                  <p className="text-[10px] uppercase tracking-widest font-bold">Secure Global Delivery</p>
+                </div>
               </div>
             )}
           </motion.div>
@@ -1465,7 +1530,8 @@ const LookbookView = ({ onBack }: any) => {
     { url: 'https://images.unsplash.com/photo-1532453288672-3a27e9be9efd?q=80&w=464&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', title: 'Velvet Hour', subtitle: 'Luxury' },
     { url: 'https://images.unsplash.com/photo-1686491730848-0c86413833e5?w=300&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fGZhc2hpb24lMjB3ZWFyc3xlbnwwfHwwfHx8MA%3D%3D', title: 'Modern Ethos', subtitle: 'Minimalist' },
     { url: 'https://images.unsplash.com/photo-1574201635302-388dd92a4c3f?q=80&w=465&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', title: 'Saffron Soul', subtitle: 'Fusion' },
-    { url: 'https://plus.unsplash.com/premium_photo-1707932495000-5748b915e4f2?q=80&w=435&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', title: 'Luxe Minimal', subtitle: 'Premium' }
+    { url: 'https://plus.unsplash.com/premium_photo-1707932495000-5748b915e4f2?q=80&w=435&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', title: 'Luxe Minimal', subtitle: 'Premium' },
+    { url: 'https://u-mercari-images.mercdn.net/photos/m96696865128_1.jpg?width=768&quality=75&_=1764934092', title: 'Heritage Soul', subtitle: 'Vintage / 2026' }
   ];
 
   return (
@@ -1527,72 +1593,133 @@ const LookbookView = ({ onBack }: any) => {
 
 const OrdersView = ({ orders, onBack }: any) => {
   return (
-    <div className="max-w-4xl mx-auto px-6 py-20 min-h-screen">
-      <div className="flex items-center gap-4 mb-12">
-        <button onClick={onBack} className="p-2 hover:bg-gray-100 rounded-full transition-colors text-gray-500">
-          <ArrowRight className="rotate-180" size={24} />
-        </button>
-        <h1 className="text-4xl font-serif font-bold">Your Orders</h1>
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 py-12 sm:py-20 min-h-screen">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-12">
+        <div className="flex items-center gap-4">
+          <button onClick={onBack} className="p-2 hover:bg-gray-100 rounded-full transition-colors text-gray-500">
+            <ArrowRight className="rotate-180" size={24} />
+          </button>
+          <h1 className="text-3xl sm:text-4xl font-serif font-bold text-black tracking-tight">Purchase History</h1>
+        </div>
+        <div className="flex items-center gap-2 text-sm text-gray-500 bg-gray-50 px-4 py-2 rounded-full border border-gray-100">
+          <Package size={16} className="text-orange-500" />
+          <span>{orders.length} Total Orders</span>
+        </div>
       </div>
 
       {orders.length === 0 ? (
-        <div className="text-center py-20 bg-gray-50 rounded-3xl border border-dashed border-gray-300">
-          <Package className="mx-auto mb-4 text-gray-300" size={48} />
-          <h3 className="text-xl font-bold text-gray-400">No orders found</h3>
-          <p className="text-gray-500 mt-2">Start shopping to see your orders here.</p>
-        </div>
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-center py-32 bg-white rounded-[40px] border border-gray-100 shadow-sm"
+        >
+          <div className="w-24 h-24 bg-gray-50 rounded-full flex items-center justify-center mx-auto mb-6">
+            <Package className="text-gray-200" size={48} />
+          </div>
+          <h3 className="text-2xl font-serif font-bold text-black mb-2">No orders found</h3>
+          <p className="text-gray-500 max-w-xs mx-auto mb-8">It looks like you haven't placed any orders yet. Start exploring our collection!</p>
+          <button onClick={onBack} className="px-8 py-3 bg-black text-white rounded-full font-bold uppercase tracking-widest text-xs hover:bg-orange-600 transition-all shadow-lg active:scale-95">
+            Continue Shopping
+          </button>
+        </motion.div>
       ) : (
-        <div className="space-y-6">
-          {orders.map((order: any) => (
+        <div className="space-y-10">
+          {orders.map((order: any, idx: number) => (
             <motion.div 
               key={order.id}
-              initial={{ opacity: 0, y: 20 }}
+              initial={{ opacity: 0, y: 30 }}
               animate={{ opacity: 1, y: 0 }}
-              className="p-6 bg-white border border-gray-100 rounded-3xl shadow-sm hover:shadow-md transition-shadow"
+              transition={{ delay: idx * 0.1 }}
+              className="bg-white border border-gray-100 rounded-[40px] shadow-sm hover:shadow-xl transition-all duration-500 overflow-hidden"
             >
-              <div className="flex flex-wrap justify-between items-start gap-4 mb-6 pb-6 border-b border-gray-100">
-                <div>
-                  <div className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Order ID</div>
-                  <div className="text-lg font-bold text-black font-mono">{order.id}</div>
-                </div>
-                <div className="hidden sm:block">
-                  <div className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Date</div>
-                  <div className="font-bold">{order.date}</div>
-                </div>
-                <div>
-                  <div className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Status</div>
-                  <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-orange-50 text-orange-600 text-[10px] font-bold uppercase tracking-wider">
-                    <span className="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse" />
-                    {order.status}
-                  </div>
-                </div>
-                <div>
-                  <div className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Total</div>
-                  <div className="font-bold text-lg">${order.total.toFixed(2)}</div>
-                </div>
-              </div>
-              
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                <div className="space-y-4">
-                  <div className="text-xs font-bold text-gray-400 uppercase tracking-widest">Items ({order.items.length})</div>
-                  <div className="flex -space-x-3 overflow-hidden">
-                    {order.items.map((item: any, i: number) => (
-                      <img 
-                        key={i} 
-                        src={item.image} 
-                        className="w-12 h-16 object-cover rounded-lg border-2 border-white shadow-sm"
-                        alt={item.title}
-                      />
-                    ))}
-                  </div>
-                </div>
-                <div className="bg-gray-50 p-4 rounded-2xl flex items-center justify-between">
-                  <div>
-                    <div className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-1">Est. Delivery</div>
-                    <div className="flex items-center gap-2 text-sm">
-                      <Check className="text-green-500" size={16} />
-                      <span className="font-medium text-gray-700">{order.estimatedDelivery}</span>
+              <div className="p-6 sm:p-10">
+                <div className="flex flex-wrap justify-between items-center gap-6 mb-10">
+                  <div className="flex flex-wrap gap-8">
+                    <div>
+                      <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">Reference</p>
+                      <p className="text-base font-bold text-black font-mono">{order.id}</p>
                     </div>
+                    <div>
+                      <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">Order Placed</p>
+                      <p className="text-base font-bold text-black">{order.date}</p>
+                    </div>
+                    <div>
+                      <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">Payment Method</p>
+                      <p className="text-base font-bold text-black">Visa •••• 4242</p>
+                    </div>
+                  </div>
+                  <div className="flex flex-col items-end">
+                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5">Grand Total</p>
+                    <p className="text-2xl font-serif font-bold text-black">${order.total.toFixed(2)}</p>
+                  </div>
+                </div>
+
+                <div className="flex flex-col lg:flex-row gap-12">
+                  <div className="flex-1 space-y-6">
+                    <div className="flex items-center justify-between mb-2">
+                       <h4 className="text-sm font-bold uppercase tracking-widest text-black">Order Contents</h4>
+                       <span className="text-xs text-gray-400">{order.items.length} items</span>
+                    </div>
+                    <div className="grid grid-cols-1 gap-4">
+                      {order.items.map((item: any, i: number) => (
+                        <div key={i} className="flex items-center gap-6 p-4 rounded-3xl bg-gray-50 border border-gray-100 group transition-all">
+                          <div className="w-20 h-24 rounded-2xl overflow-hidden shadow-sm flex-shrink-0">
+                            <img src={item.image} alt={item.title} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-xs font-bold text-orange-600 uppercase tracking-wider mb-1">{item.subCategory}</p>
+                            <h5 className="font-bold text-black truncate mb-1">{item.title}</h5>
+                            <div className="flex items-center gap-3 text-xs text-gray-500">
+                              <span>Size: <span className="font-bold text-black uppercase">{item.selectedSize}</span></span>
+                              <span className="w-1 h-1 rounded-full bg-gray-300" />
+                              <span>Qty: <span className="font-bold text-black">1</span></span>
+                            </div>
+                          </div>
+                          <div className="text-right">
+                             <p className="font-bold text-black">${item.price.toFixed(2)}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="lg:w-80 flex flex-col gap-6">
+                    <div className="p-8 rounded-[32px] bg-black text-white relative overflow-hidden group">
+                      <div className="absolute top-0 right-0 w-32 h-32 bg-orange-600/20 blur-3xl rounded-full -mr-16 -mt-16 group-hover:scale-150 transition-transform duration-700" />
+                      <div className="relative z-10">
+                        <div className="flex items-center gap-2 mb-6">
+                          <Truck size={18} className="text-orange-500" />
+                          <h4 className="text-xs font-bold uppercase tracking-widest">Delivery Status</h4>
+                        </div>
+                        <div className="mb-6">
+                          <div className="flex items-center justify-between text-xs font-bold mb-2">
+                             <span>{order.status}</span>
+                             <span className="text-gray-400">75%</span>
+                          </div>
+                          <div className="h-1.5 w-full bg-white/10 rounded-full overflow-hidden">
+                            <motion.div 
+                               initial={{ width: 0 }}
+                               animate={{ width: '75%' }}
+                               transition={{ duration: 1.5, delay: 0.5 }}
+                               className="h-full bg-gradient-to-r from-orange-500 to-red-600" 
+                            />
+                          </div>
+                        </div>
+                        <p className="text-[10px] text-gray-400 uppercase tracking-widest mb-1">Expected Delivery</p>
+                        <p className="text-sm font-bold">{order.estimatedDelivery}</p>
+                        <button className="w-full mt-8 py-3 rounded-2xl bg-white text-black text-[10px] font-bold uppercase tracking-widest hover:bg-orange-500 hover:text-white transition-all">
+                          Track Shipment
+                        </button>
+                      </div>
+                    </div>
+                    
+                    <button className="flex items-center justify-between p-6 rounded-3xl border border-gray-100 hover:border-black transition-all group">
+                      <div className="flex items-center gap-3">
+                        <RefreshCw size={18} className="text-gray-400 group-hover:text-black group-hover:rotate-180 transition-all duration-500" />
+                        <span className="text-xs font-bold uppercase tracking-widest">Request Return</span>
+                      </div>
+                      <ChevronRight size={16} className="text-gray-400" />
+                    </button>
                   </div>
                 </div>
               </div>
@@ -1600,6 +1727,183 @@ const OrdersView = ({ orders, onBack }: any) => {
           ))}
         </div>
       )}
+    </div>
+  );
+};
+
+const ProfileDashboard = ({ user, orders, wishlistCount, onLogout, onNavigate }: any) => {
+  const stats = [
+    { label: 'Total Spent', value: `$${orders.reduce((acc: number, cur: any) => acc + cur.total, 0).toFixed(0)}`, icon: Diamond, color: 'text-orange-600', bg: 'bg-orange-50' },
+    { label: 'Orders placed', value: orders.length, icon: Package, color: 'text-blue-600', bg: 'bg-blue-50' },
+    { label: 'Wishlist', value: wishlistCount, icon: Heart, color: 'text-red-500', bg: 'bg-red-50' },
+    { label: 'Member Level', value: 'Silver', icon: Star, color: 'text-amber-500', bg: 'bg-amber-50' },
+  ];
+
+  return (
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-20 min-h-screen">
+      <div className="flex flex-col lg:flex-row gap-12">
+        {/* Sidebar */}
+        <aside className="lg:w-80 flex flex-col gap-8 lg:sticky lg:top-28 lg:h-fit">
+          <div className="p-8 bg-white border border-gray-100 rounded-[40px] shadow-sm">
+            <div className="flex flex-col items-center text-center mb-8">
+              <div className="relative mb-4">
+                {user.photoURL ? (
+                  <img src={user.photoURL} alt="Profile" className="w-24 h-24 rounded-full border-4 border-orange-50 shadow-lg" />
+                ) : (
+                  <div className="w-24 h-24 rounded-full bg-orange-50 text-orange-600 flex items-center justify-center border-4 border-orange-50 shadow-lg">
+                    <User size={40} />
+                  </div>
+                )}
+                <div className="absolute -bottom-1 -right-1 w-8 h-8 bg-black text-white rounded-full flex items-center justify-center border-4 border-white shadow-md">
+                   <Sparkles size={14} className="fill-white" />
+                </div>
+              </div>
+              <h2 className="text-xl font-bold text-black mb-1">{user.displayName || 'Fashionista'}</h2>
+              <p className="text-xs text-gray-500 font-medium">{user.email}</p>
+              <div className="mt-4 px-3 py-1 bg-gray-100 rounded-full text-[9px] font-bold text-gray-600 uppercase tracking-widest">
+                Member Since 2024
+              </div>
+            </div>
+
+            <div className="space-y-1">
+              {[
+                { id: 'overview', label: 'Dashboard', icon: User },
+                { id: 'orders', label: 'Order History', icon: Package },
+                { id: 'wishlist', label: 'My Wishlist', icon: Heart },
+                { id: 'address', label: 'Saved Addresses', icon: MapPin },
+                { id: 'payments', label: 'Payment Methods', icon: Diamond },
+              ].map((item) => (
+                <button 
+                  key={item.id}
+                  onClick={() => item.id === 'orders' ? onNavigate('orders') : null}
+                  className={`w-full flex items-center justify-between p-4 rounded-2xl transition-all group ${
+                    item.id === 'overview' ? 'bg-black text-white shadow-lg' : 'text-gray-500 hover:bg-gray-50 hover:text-black'
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    <item.icon size={18} className={item.id === 'overview' ? 'text-orange-500' : 'text-gray-400 group-hover:text-black'} />
+                    <span className="text-sm font-bold tracking-tight">{item.label}</span>
+                  </div>
+                  <ChevronRight size={14} className={item.id === 'overview' ? 'text-white/40' : 'text-gray-300'} />
+                </button>
+              ))}
+            </div>
+
+            <div className="mt-8 pt-8 border-t border-gray-100">
+               <button 
+                onClick={onLogout}
+                className="w-full flex items-center gap-3 p-4 rounded-2xl text-red-500 hover:bg-red-50 transition-all font-bold tracking-tight text-sm"
+               >
+                 <LogOut size={18} />
+                 Sign Out
+               </button>
+            </div>
+          </div>
+        </aside>
+
+        {/* Main Content */}
+        <div className="flex-1 space-y-12">
+          {/* Welcome Card */}
+          <div className="relative p-10 bg-gradient-to-br from-orange-500 to-red-600 rounded-[48px] overflow-hidden shadow-2xl shadow-orange-500/20">
+             <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 blur-3xl rounded-full -mr-32 -mt-32" />
+             <div className="absolute bottom-0 left-0 w-64 h-64 bg-black/10 blur-3xl rounded-full -ml-32 -mb-32" />
+             
+             <div className="relative z-10">
+                <h1 className="text-3xl sm:text-5xl font-serif font-bold text-white mb-4 leading-tight">
+                  Welcome back, <br />
+                  <span className="italic font-light">{user.displayName?.split(' ')[0] || 'Toby'}!</span>
+                </h1>
+                <p className="text-white/80 max-w-md text-sm sm:text-base leading-relaxed mb-8">
+                  Get ready for the new season. We've handpicked some collections just for you based on your unique style.
+                </p>
+                <button 
+                  onClick={() => onNavigate('home')}
+                  className="px-8 py-3 bg-white text-black rounded-full font-bold uppercase tracking-widest text-xs hover:bg-black hover:text-white transition-all shadow-lg active:scale-95"
+                >
+                  Explore New Arrivals
+                </button>
+             </div>
+          </div>
+
+          {/* Stats Grid */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6">
+            {stats.map((stat, i) => (
+              <div key={i} className="p-6 bg-white border border-gray-100 rounded-3xl shadow-sm hover:shadow-md transition-all">
+                <div className={`w-12 h-12 rounded-2xl ${stat.bg} ${stat.color} flex items-center justify-center mb-4`}>
+                  <stat.icon size={24} strokeWidth={1.5} />
+                </div>
+                <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">{stat.label}</p>
+                <p className="text-xl font-serif font-bold text-black">{stat.value}</p>
+              </div>
+            ))}
+          </div>
+
+          <div className="grid lg:grid-cols-2 gap-8">
+            {/* Recent Orders */}
+            <div className="space-y-6">
+              <div className="flex items-center justify-between">
+                <h3 className="text-xl font-bold font-serif text-black">Recent Activity</h3>
+                <button onClick={() => onNavigate('orders')} className="text-xs font-bold text-orange-600 hover:underline uppercase tracking-widest">View All</button>
+              </div>
+              
+              {orders.length > 0 ? (
+                <div className="space-y-4">
+                  {orders.slice(0, 2).map((order: any) => (
+                    <div key={order.id} className="p-6 bg-white border border-gray-100 rounded-3xl shadow-sm hover:border-black transition-all group">
+                      <div className="flex items-center justify-between mb-4">
+                        <span className="text-[10px] font-mono text-gray-400 uppercase">#{order.id}</span>
+                        <div className="px-2 py-1 bg-green-50 text-green-600 rounded-md text-[8px] font-bold uppercase tracking-widest">
+                           {order.status}
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-4">
+                         <div className="flex -space-x-3">
+                           {order.items.slice(0, 3).map((item: any, i: number) => (
+                             <img key={i} src={item.image} className="w-10 h-10 rounded-full border-2 border-white object-cover" alt="" />
+                           ))}
+                           {order.items.length > 3 && (
+                             <div className="w-10 h-10 rounded-full border-2 border-white bg-gray-100 text-[10px] font-bold flex items-center justify-center">
+                               +{order.items.length - 3}
+                             </div>
+                           )}
+                         </div>
+                         <div className="flex-1">
+                            <p className="text-[10px] text-gray-400 uppercase font-bold tracking-widest">Amount Paid</p>
+                            <p className="font-bold text-black">${order.total.toFixed(2)}</p>
+                         </div>
+                         <ChevronRight size={16} className="text-gray-300 group-hover:text-black transition-colors" />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="p-12 text-center bg-gray-50 border border-dashed border-gray-200 rounded-3xl">
+                   <p className="text-sm text-gray-400">No recent orders found.</p>
+                </div>
+              )}
+            </div>
+
+            {/* Loyalty Status */}
+            <div className="p-8 bg-white border border-gray-100 rounded-[40px] shadow-sm flex flex-col items-center text-center">
+               <div className="w-20 h-20 rounded-3xl bg-amber-50 text-amber-500 flex items-center justify-center mb-6">
+                  <Star size={40} className="fill-amber-500" />
+               </div>
+               <p className="text-[10px] font-bold text-amber-600 uppercase tracking-[0.2em] mb-2">Transit Rewards</p>
+               <h4 className="text-2xl font-serif font-bold text-black mb-4">Silver Tier Member</h4>
+               <p className="text-sm text-gray-500 leading-relaxed mb-8 max-w-xs">
+                 You are 2,400 points away from qualifying for the <span className="font-bold text-black">Gold Tier</span> and free express shipping.
+               </p>
+               <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden mb-2">
+                  <div className="h-full w-[65%] bg-amber-500 rounded-full" />
+               </div>
+               <div className="w-full flex justify-between text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                  <span>Silver</span>
+                  <span>Gold Level</span>
+               </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };
@@ -1615,6 +1919,18 @@ export default function App() {
   const [activeCategory, setActiveCategory] = useState('');
   const [cart, setCart] = useState<any[]>([]);
   const [wishlist, setWishlist] = useState<any[]>([]);
+  
+  // Initialize bag if needed
+  useEffect(() => {
+    if (cart.length === 0 && !localStorage.getItem('bag_init_done')) {
+      const menProducts = PRODUCT_DATA['Men'];
+      if (menProducts && menProducts.length > 1) {
+        setCart([{ ...menProducts[0], selectedSize: 'M' }, { ...menProducts[1], selectedSize: 'L' }]);
+        localStorage.setItem('bag_init_done', 'true');
+      }
+    }
+  }, [cart.length]);
+
   const [orders, setOrders] = useState<any[]>([]);
   const [selectedProduct, setSelectedProduct] = useState<any | null>(null);
 
@@ -2054,7 +2370,15 @@ export default function App() {
             <PromoSection setCurrentView={setCurrentView} setActiveCategory={setActiveCategory} />
           </>
         ) : currentView === 'orders' ? (
-          <OrdersView orders={orders} onBack={() => setCurrentView('home')} />
+          <OrdersView orders={orders} onBack={() => setCurrentView('profile')} />
+        ) : currentView === 'profile' ? (
+          <ProfileDashboard 
+            user={user} 
+            orders={orders} 
+            wishlistCount={wishlist.length} 
+            onLogout={handleLogout}
+            onNavigate={setCurrentView}
+          />
         ) : currentView === 'lookbook' ? (
           <LookbookView onBack={() => setCurrentView('home')} />
         ) : (

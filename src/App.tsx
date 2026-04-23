@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useCallback, useMemo, memo } from 'react';
 import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'motion/react';
-import { Menu, X, ShoppingBag, Search, ArrowRight, Star, ChevronRight, Heart, Shirt, Diamond, Check, User, LogOut, Eye, EyeOff, Package, Mail, Phone, MapPin, Headphones, HelpCircle, Truck, RefreshCw, Send, Sparkles, MessageCircle } from 'lucide-react';
+import { Menu, X, ShoppingCart, Search, ArrowRight, Star, ChevronRight, Heart, Shirt, Diamond, Check, User, LogOut, Eye, EyeOff, Package, Mail, Phone, MapPin, Headphones, HelpCircle, Truck, RefreshCw, Send, Sparkles, MessageCircle } from 'lucide-react';
 import { auth, logOut, signInWithGoogle } from './firebase';
 import { onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, sendEmailVerification } from 'firebase/auth';
 
@@ -21,6 +21,17 @@ Logo.displayName = 'Logo';
 const Navbar = memo(({ activeCategory, setActiveCategory, currentView, setCurrentView, cartCount, wishlistCount, onSearchClick, onCartClick, onWishlistClick, user, onLogin, onLogout, onSupportClick }: any) => {
   const [isOpen, setIsOpen] = useState(false);
   const categories = ['Men', 'Women', 'Kids', 'Collections'];
+
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isOpen]);
 
   return (
     <>
@@ -104,7 +115,7 @@ const Navbar = memo(({ activeCategory, setActiveCategory, currentView, setCurren
               )}
             </button>
             <button onClick={onCartClick} className="text-black hover:text-gray-600 transition-colors relative">
-              <ShoppingBag className="w-4.5 h-4.5 sm:w-5 sm:h-5" strokeWidth={1.5} />
+              <ShoppingCart className="w-4.5 h-4.5 sm:w-5 sm:h-5" strokeWidth={1.5} />
               {cartCount > 0 && (
                 <span className="absolute -top-1.5 -right-1.5 w-3.5 h-3.5 sm:w-4 sm:h-4 bg-gradient-to-r from-orange-500 to-red-500 text-white text-[8px] sm:text-[9px] font-bold rounded-full flex items-center justify-center">
                   {cartCount}
@@ -172,7 +183,7 @@ const Navbar = memo(({ activeCategory, setActiveCategory, currentView, setCurren
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-              className="absolute top-0 right-0 w-full max-w-md h-full bg-white border-l border-gray-200 p-8 flex flex-col shadow-2xl"
+              className="fixed top-0 right-0 w-full max-w-md h-full bg-white border-l border-gray-200 p-8 flex flex-col shadow-2xl z-[70]"
             >
               <div className="flex justify-between items-center mb-12">
                 <span className="font-serif font-bold text-2xl text-black uppercase tracking-wide">Menu</span>
@@ -512,7 +523,7 @@ const ProductModal = memo(({ product, onClose, onAddToCart, onAddToWishlist, wis
                 onClick={() => { onAddToCart(product, selectedSize); onClose(); }}
                 className="flex-1 py-4 bg-gradient-to-r from-orange-500 to-red-600 text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-orange-500/30 transition-all flex items-center justify-center gap-2"
               >
-                <ShoppingBag size={20} /> Add to Bag
+                <ShoppingCart size={20} /> Add to Cart
               </button>
               <button 
                 onClick={() => onAddToWishlist(product)}
@@ -718,7 +729,7 @@ const ProductCard = memo(({ product, idx, isInWishlist, onProductClick, onAddToC
             onClick={(e) => { e.stopPropagation(); onAddToCart(product); }}
             className={`w-full py-3 ${isDark ? 'bg-white text-black' : 'bg-white/95 backdrop-blur-md text-black'} font-semibold rounded-xl hover:bg-black hover:text-white transition-colors shadow-lg border ${isDark ? 'border-transparent' : 'border-gray-200'}`}
           >
-            Add to Bag
+            Add to Cart
           </button>
         </div>
       </div>
@@ -1396,6 +1407,17 @@ const ChatbotWidget = memo(() => {
 ChatbotWidget.displayName = 'ChatbotWidget';
 
 const CartDrawer = ({ isOpen, onClose, cart, onRemove, onCheckout }: any) => {
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isOpen]);
+
   if (!isOpen) return null;
   const total = cart.reduce((sum: number, item: any) => sum + item.price, 0);
 
@@ -1410,15 +1432,15 @@ const CartDrawer = ({ isOpen, onClose, cart, onRemove, onCheckout }: any) => {
           <motion.div 
             initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }}
             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-            className="relative w-full max-w-md h-full bg-white shadow-2xl flex flex-col"
+            className="fixed top-0 right-0 w-full max-w-md h-full bg-white shadow-2xl flex flex-col z-[110]"
           >
             <div className="p-6 border-b border-gray-200 flex justify-between items-center">
-              <h2 className="text-2xl font-serif font-bold">Shopping Bag ({cart.length})</h2>
+              <h2 className="text-2xl font-serif font-bold">Shopping Cart ({cart.length})</h2>
               <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-full transition-colors"><X size={24} /></button>
             </div>
             <div className="flex-1 overflow-y-auto p-6 flex flex-col gap-6">
               {cart.length === 0 ? (
-                <div className="text-center text-gray-500 mt-10">Your bag is empty.</div>
+                <div className="text-center text-gray-500 mt-10">Your cart is empty.</div>
               ) : (
                 cart.map((item: any, idx: number) => (
                   <div key={idx} className="flex gap-4 items-center">
@@ -1466,6 +1488,17 @@ const CartDrawer = ({ isOpen, onClose, cart, onRemove, onCheckout }: any) => {
 };
 
 const WishlistDrawer = ({ isOpen, onClose, wishlist, onRemove, onAddToCart }: any) => {
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = 'unset';
+    }
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
   return (
@@ -1479,7 +1512,7 @@ const WishlistDrawer = ({ isOpen, onClose, wishlist, onRemove, onAddToCart }: an
           <motion.div 
             initial={{ x: '100%' }} animate={{ x: 0 }} exit={{ x: '100%' }}
             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-            className="relative w-full max-w-md h-full bg-white shadow-2xl flex flex-col"
+            className="fixed top-0 right-0 w-full max-w-md h-full bg-white shadow-2xl flex flex-col z-[110]"
           >
             <div className="p-6 border-b border-gray-200 flex justify-between items-center">
               <h2 className="text-2xl font-serif font-bold">Wishlist ({wishlist.length})</h2>
@@ -1499,7 +1532,7 @@ const WishlistDrawer = ({ isOpen, onClose, wishlist, onRemove, onAddToCart }: an
                         onClick={() => { onAddToCart(item); onRemove(item.id); }}
                         className="text-xs font-bold text-orange-600 mt-2 uppercase tracking-wider hover:text-orange-700"
                       >
-                        Move to Bag
+                        Move to Cart
                       </button>
                     </div>
                     <button onClick={() => onRemove(item.id)} className="p-2 text-gray-400 hover:text-red-500 transition-colors">
@@ -1920,13 +1953,13 @@ export default function App() {
   const [cart, setCart] = useState<any[]>([]);
   const [wishlist, setWishlist] = useState<any[]>([]);
   
-  // Initialize bag if needed
+  // Initialize cart if needed
   useEffect(() => {
-    if (cart.length === 0 && !localStorage.getItem('bag_init_done')) {
+    if (cart.length === 0 && !localStorage.getItem('cart_init_done')) {
       const menProducts = PRODUCT_DATA['Men'];
       if (menProducts && menProducts.length > 1) {
         setCart([{ ...menProducts[0], selectedSize: 'M' }, { ...menProducts[1], selectedSize: 'L' }]);
-        localStorage.setItem('bag_init_done', 'true');
+        localStorage.setItem('cart_init_done', 'true');
       }
     }
   }, [cart.length]);
@@ -2059,7 +2092,7 @@ export default function App() {
       return;
     }
     setCart(prev => [...prev, { ...product, selectedSize: size }]);
-    showToast(`Added ${product.title} to bag`);
+    showToast(`Added ${product.title} to cart`);
   }, [user, showToast]);
 
   const handleCheckout = useCallback(() => {

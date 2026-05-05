@@ -1,20 +1,30 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
-
-# Run and deploy your AI Studio app
-
-This contains everything you need to run your app locally.
-
-View your app in AI Studio: https://ai.studio/apps/d45b2a8e-c17c-4ef7-9d27-ec52f2d4a196
-
-## Run Locally
-
-**Prerequisites:**  Node.js
-
-
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+# Trendy Transit
+A modern logistics and transportation landing page designed for efficient service
+discovery and seamless user navigation.
+## 🚀 Live Demo
+Check out the live site: [https://trendy-transit.vercel.app](https://trendy-
+transit.vercel.app)
+## 🛠 Tech Stack
+- **Frontend Framework:** React.js
+- **Styling:** Tailwind CSS
+- **Build Tool:** Vite
+## ✨ Key Features
+- Service Highlight Cards
+- Dynamic UI Elements
+- Clean Navigation Flow
+- Deployment via Vercel
+## 📦 Installation & Setup
+1. **Clone the repository:**
+```bash
+git clone https://github.com/realtee01/project-repo-name.git
+```
+2. **Install dependencies:**
+```bash
+npm install
+```
+3. **Run the development server:**
+```bash
+npm run dev
+```
+## 📄 License
+This project is open-source and available under the [MIT License](LICENSE)

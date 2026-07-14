@@ -1,0 +1,48 @@
+        <Routes>
+          <Route path="/" element={
+            <>
+              <Hero setCurrentView={setCurrentView} />
+              <TrendingSection
+                onProductClick={handleProductClick}
+                onAddToCart={handleAddToCart}
+                onAddToWishlist={handleAddToWishlist}
+                wishlist={wishlist}
+              />
+              <FeaturedProducts
+                activeCategory={activeCategory}
+                onProductClick={handleProductClick}
+                onAddToCart={handleAddToCart}
+                onAddToWishlist={handleAddToWishlist}
+                wishlist={wishlist}
+              />
+              <PromoSection
+                setCurrentView={setCurrentView}
+                setActiveCategory={setActiveCategory}
+              />
+            </>
+          } />
+          <Route path="/orders" element={
+            <OrdersView
+              orders={orders}
+              onBack={() => setCurrentView("profile")}
+            />
+          } />
+          <Route path="/profile" element={
+            <ProfileDashboard
+              user={user}
+              orders={orders}
+              wishlistCount={wishlist.length}
+              onLogout={handleLogout}
+              onNavigate={setCurrentView}
+            />
+          } />
+          <Route path="/lookbook" element={
+            <LookbookView onBack={() => setCurrentView("home")} />
+          } />
+          <Route path="/about" element={
+            <AboutSection />
+          } />
+          <Route path="*" element={
+             <AboutSection />
+          } />
+        </Routes>
